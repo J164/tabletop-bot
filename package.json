@@ -1,0 +1,53 @@
+{
+  "name": "tabletop-bot",
+  "version": "0.1.0",
+  "description": "A Discord Bot for playing tabletop games",
+  "author": "J164 <j164e3@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/J164/tabletop-bot",
+  "repository": "github:J164/discord-bots",
+  "bugs": "https://github.com/J164/tabletop-bot/issues",
+  "engines": {
+    "node": ">=18.14.0"
+  },
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "discord.js": "14.7.1",
+    "pino": "8.11.0"
+  },
+  "devDependencies": {
+    "@types/node": "18.14.6",
+    "ava": "5.2.0",
+    "typescript": "4.9.5",
+    "xo": "0.53.1"
+  },
+  "optionalDependencies": {
+    "bufferutil": "4.0.7",
+    "erlpack": "github:discord/erlpack",
+    "utf-8-validate": "6.0.3",
+    "zlib-sync": "0.1.8"
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "xo",
+    "test": "ava"
+  },
+  "xo": {
+    "prettier": true,
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:@typescript-eslint/recommended-requiring-type-checking",
+      "plugin:unicorn/recommended"
+    ],
+    "rules": {
+      "@typescript-eslint/naming-convention": "off",
+      "@typescript-eslint/no-implicit-any-catch": "off"
+    }
+  },
+  "prettier": {
+    "bracketSpacing": true,
+    "printWidth": 160
+  }
+}
