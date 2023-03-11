@@ -23,7 +23,7 @@ jobs:
 
       - run: npm ci --omit=optional
       - run: npm run build
-      - run: npm run deploy --bot_id=${{ secrets.BOT_ID }} --bot_token=${{ secrets.BOT_TOKEN }}
+      - run: npm run deploy --bot-id=${{ secrets.BOT_ID }} --bot-token=${{ secrets.BOT_TOKEN }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
