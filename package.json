@@ -31,7 +31,8 @@
   "scripts": {
     "build": "tsc",
     "lint": "xo",
-    "test": "ava"
+    "test": "ava",
+    "deploy": "node build/deploy"
   },
   "xo": {
     "prettier": true,

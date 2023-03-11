@@ -1,29 +1,17 @@
-import {
-	type AutocompleteInteraction,
-	type CacheType,
-	type ChatInputApplicationCommandData,
-	type ChatInputCommandInteraction,
-	type InteractionResponse,
-} from 'discord.js';
+import { type AutocompleteInteraction, type CacheType, type ChatInputCommandInteraction, type InteractionResponse } from 'discord.js';
 import { type Logger } from 'pino';
 
-// TODO implement type
-type GlobalInfo = Record<string, unknown>;
-
-// TODO implement type
-type GuildInfo = Record<string, unknown>;
-
 /** Responds to a Chat Input Command with global scope */
-type GlobalChatInputCommandHandler = (response: GlobalChatInputCommandResponse, logger: Logger, globalInfo: GlobalInfo) => Promise<void>;
+type GlobalChatInputCommandHandler = (response: GlobalChatInputCommandResponse, logger: Logger) => Promise<void>;
 
 /** Responds to an Autocomplete Interaction with global scope */
-type GlobalChatInputAutocompleteHandler = (interaction: AutocompleteInteraction, logger: Logger, globalInfo: GlobalInfo) => Promise<void>;
+type GlobalChatInputAutocompleteHandler = (interaction: GlobalAutocompleteInteraction, logger: Logger) => Promise<void>;
 
 /** Responds to a Chat Input command with guild scope */
-type GuildChatInputCommandHandler = (response: GuildChatInputCommandResponse, logger: Logger, guildInfo: GuildInfo, globalInfo: GlobalInfo) => Promise<void>;
+type GuildChatInputCommandHandler = (response: GuildChatInputCommandResponse, logger: Logger) => Promise<void>;
 
 /** Responds to an Autocomplete Interaction with guild scope */
-type GuildChatInputAutocompleteHandler = (interaction: AutocompleteInteraction, logger: Logger, guildInfo: GuildInfo, globalInfo: GlobalInfo) => Promise<void>;
+type GuildChatInputAutocompleteHandler = (interaction: GuildAutocompleteInteraction, logger: Logger) => Promise<void>;
 
 /** Interaction info for Chat Input Commands */
 type ChatInputCommandResponse<T extends CacheType> = Omit<InteractionResponse, 'interaction'> & {
@@ -33,8 +21,14 @@ type ChatInputCommandResponse<T extends CacheType> = Omit<InteractionResponse, '
 /** Shorthand for a ChatInputCommandResponse with global scope */
 type GlobalChatInputCommandResponse = ChatInputCommandResponse<CacheType>;
 
-/** Shorhand for a ChatInputCommandResponse with guild scope */
+/** Shorthand for a ChatInputCommandResponse with guild scope */
 type GuildChatInputCommandResponse = ChatInputCommandResponse<'cached'>;
+
+/** Shorthand for a AutocompleteInteraction with global scope */
+type GlobalAutocompleteInteraction = AutocompleteInteraction;
+
+/** Shorthand for a AutocompleteInteraction with guild scope */
+type GuildAutocompleteInteraction = AutocompleteInteraction<'cached'>;
 
 /** Command scopes */
 type CommandType = 'Global' | 'Guild';
@@ -51,7 +45,6 @@ type ChatInputCommand<T extends CommandType> = (T extends 'Global'
 			readonly autocomplete?: GuildChatInputAutocompleteHandler;
 			readonly type: T;
 	  }) & {
-	readonly data: ChatInputApplicationCommandData;
 	readonly ephemeral?: boolean;
 	readonly allowedUsers?: string[];
 };

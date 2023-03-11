@@ -1,11 +1,4 @@
-import {
-	type ChatInputCommandInteraction,
-	type Interaction,
-	type AutocompleteInteraction,
-	type MessageContextMenuCommandInteraction,
-	type UserContextMenuCommandInteraction,
-	type CacheType,
-} from 'discord.js';
+import { type ChatInputCommandInteraction, type Interaction, type AutocompleteInteraction, type CacheType } from 'discord.js';
 import { pino } from 'pino';
 import { chatInputCommands } from '../commands/chat-input-commands/index.js';
 import { type ChatInputCommandResponse } from '../types/client.js';
@@ -22,6 +15,12 @@ export async function onInteractionCreate(interaction: Interaction): Promise<voi
 		return;
 	}
 
+	if (interaction.isAutocomplete()) {
+		await handleChatInputAutocomplete(interaction);
+		return;
+	}
+
+	/* TODO:
 	if (interaction.isUserContextMenuCommand()) {
 		await handleUserContextMenuCommand(interaction);
 		return;
@@ -31,11 +30,7 @@ export async function onInteractionCreate(interaction: Interaction): Promise<voi
 		await handleMessageContextMenuCommand(interaction);
 		return;
 	}
-
-	if (interaction.isAutocomplete()) {
-		await handleChatInputAutocomplete(interaction);
-		return;
-	}
+	*/
 
 	logger.info(interaction, 'Interaction recieved and not actioned by global event handler');
 }
@@ -132,6 +127,8 @@ async function handleChatInputAutocomplete(interaction: AutocompleteInteraction)
 	}
 }
 
+/* TODO:
 async function handleUserContextMenuCommand(interaction: UserContextMenuCommandInteraction): Promise<void> {}
 
 async function handleMessageContextMenuCommand(interaction: MessageContextMenuCommandInteraction): Promise<void> {}
+*/
