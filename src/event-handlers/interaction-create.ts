@@ -1,13 +1,15 @@
 import { type ChatInputCommandInteraction, type Interaction, type AutocompleteInteraction, type CacheType } from 'discord.js';
 import { pino } from 'pino';
-import { chatInputCommands } from '../commands/chat-input-commands/index.js';
-import { type ChatInputCommandResponse } from '../types/client.js';
+import { type ChatInputCommand } from '../types/client.js';
 import { EmbedType } from '../types/helpers.js';
+import { getApplicationCommands } from '../util/command-parser.js';
 import { responseOptions } from '../util/response-formatters.js';
 
 const logger = pino({
 	name: 'interaction-create',
 });
+
+const commands = await getApplicationCommands();
 
 export async function onInteractionCreate(interaction: Interaction): Promise<void> {
 	if (interaction.isChatInputCommand()) {
@@ -36,20 +38,15 @@ export async function onInteractionCreate(interaction: Interaction): Promise<voi
 }
 
 async function handleChatInputCommand(interaction: ChatInputCommandInteraction): Promise<void> {
-	const command = chatInputCommands.get(interaction.commandName);
+	const command = commands.get(interaction.commandName);
 
-	if (!command) {
+	if (!command || command.type !== 'chatInputCommand') {
 		logger.error(interaction, `Could not find handler for Chat Input Command named "${interaction.commandName}"`);
 		await interaction.reply(responseOptions(EmbedType.Error, 'Something went wrong!'));
 		return;
 	}
 
-	if (command.allowedUsers && !command.allowedUsers.includes(interaction.user.id)) {
-		await interaction.reply(responseOptions(EmbedType.Error, 'You are not authorized to use this command!'));
-		return;
-	}
-
-	const interactionResponse = (await interaction.deferReply({ ephemeral: command.ephemeral ?? false })) as ChatInputCommandResponse<CacheType>;
+	const interactionResponse = (await interaction.deferReply({ ephemeral: command.ephemeral ?? false })) as ChatInputCommand<CacheType>;
 
 	const interactionLogger = logger.child({
 		type: 'Chat Input Command',
@@ -60,14 +57,14 @@ async function handleChatInputCommand(interaction: ChatInputCommandInteraction):
 
 	interactionLogger.info(interaction, 'Chat Input Command Interaction deferred');
 
-	if (command.type === 'Guild') {
+	if (command.context === 'Guild') {
 		if (!interaction.inCachedGuild()) {
-			await interaction.editReply(responseOptions(EmbedType.Error, 'This command can only be used in a server!'));
+			await interaction.editReply(responseOptions(EmbedType.Error, 'This command can only be used in servers!'));
 			return;
 		}
 
 		try {
-			await command.respond(interactionResponse as ChatInputCommandResponse<'cached'>, interactionLogger);
+			await command.respond(interactionResponse as ChatInputCommand<'cached'>, interactionLogger);
 		} catch (error) {
 			await interaction.editReply(responseOptions(EmbedType.Error, 'Something went wrong!'));
 			interactionLogger.error(error, 'Chat Input Command Interaction threw an error');
@@ -85,15 +82,10 @@ async function handleChatInputCommand(interaction: ChatInputCommandInteraction):
 }
 
 async function handleChatInputAutocomplete(interaction: AutocompleteInteraction): Promise<void> {
-	const command = chatInputCommands.get(interaction.commandName);
+	const command = commands.get(interaction.commandName);
 
 	if (!command?.autocomplete) {
 		logger.error(interaction, `Could not find autocomplete handler for Chat Input Command named "${interaction.commandName}"`);
-		await interaction.respond([]);
-		return;
-	}
-
-	if (command.allowedUsers && !command.allowedUsers.includes(interaction.user.id)) {
 		await interaction.respond([]);
 		return;
 	}
@@ -105,7 +97,7 @@ async function handleChatInputAutocomplete(interaction: AutocompleteInteraction)
 		options: interaction.options,
 	});
 
-	if (command.type === 'Guild') {
+	if (command.context === 'Guild') {
 		if (!interaction.inCachedGuild()) {
 			await interaction.respond([]);
 			return;

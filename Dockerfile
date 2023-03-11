@@ -8,4 +8,4 @@ COPY static /app/static/
 
 RUN npm ci
 
-CMD [ "node", "." ]
+CMD [ "node", "index.js" ]
