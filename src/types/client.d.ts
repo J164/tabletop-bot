@@ -1,57 +1,54 @@
-import {
-	type AutocompleteInteraction,
-	type CacheType,
-	type ChatInputApplicationCommandData,
-	type ChatInputCommandInteraction,
-	type InteractionResponse,
-} from 'discord.js';
+import { type AutocompleteInteraction, type CacheType, type ChatInputCommandInteraction, type InteractionResponse } from 'discord.js';
 import { type Logger } from 'pino';
 
-// TODO implement type
-type GlobalInfo = Record<string, unknown>;
-
-// TODO implement type
-type GuildInfo = Record<string, unknown>;
-
 /** Responds to a Chat Input Command with global scope */
-type GlobalChatInputCommandHandler = (response: GlobalChatInputCommandResponse, logger: Logger, globalInfo: GlobalInfo) => Promise<void>;
+type GlobalChatInputCommandResponder = (response: GlobalChatInputCommandResponse, logger: Logger) => Promise<void>;
 
 /** Responds to an Autocomplete Interaction with global scope */
-type GlobalChatInputAutocompleteHandler = (interaction: AutocompleteInteraction, logger: Logger, globalInfo: GlobalInfo) => Promise<void>;
+type GlobalChatInputAutocompleteResponder = (interaction: GlobalAutocompleteInteraction, logger: Logger) => Promise<void>;
 
 /** Responds to a Chat Input command with guild scope */
-type GuildChatInputCommandHandler = (response: GuildChatInputCommandResponse, logger: Logger, guildInfo: GuildInfo, globalInfo: GlobalInfo) => Promise<void>;
+type GuildChatInputCommandResponder = (response: GuildChatInputCommandResponse, logger: Logger) => Promise<void>;
 
 /** Responds to an Autocomplete Interaction with guild scope */
-type GuildChatInputAutocompleteHandler = (interaction: AutocompleteInteraction, logger: Logger, guildInfo: GuildInfo, globalInfo: GlobalInfo) => Promise<void>;
+type GuildChatInputAutocompleteResponder = (interaction: GuildAutocompleteInteraction, logger: Logger) => Promise<void>;
 
 /** Interaction info for Chat Input Commands */
-type ChatInputCommandResponse<T extends CacheType> = Omit<InteractionResponse, 'interaction'> & {
+type ChatInputCommand<T extends CacheType> = Omit<InteractionResponse, 'interaction'> & {
 	interaction: ChatInputCommandInteraction<T>;
 };
 
 /** Shorthand for a ChatInputCommandResponse with global scope */
-type GlobalChatInputCommandResponse = ChatInputCommandResponse<CacheType>;
+type GlobalChatInputCommandResponse = ChatInputCommand<CacheType>;
 
-/** Shorhand for a ChatInputCommandResponse with guild scope */
-type GuildChatInputCommandResponse = ChatInputCommandResponse<'cached'>;
+/** Shorthand for a ChatInputCommandResponse with guild scope */
+type GuildChatInputCommandResponse = ChatInputCommand<'cached'>;
 
-/** Command scopes */
-type CommandType = 'Global' | 'Guild';
+/** Shorthand for a AutocompleteInteraction with global scope */
+type GlobalAutocompleteInteraction = AutocompleteInteraction;
 
-/** Object that defines how the bot handles a Chat Input Command */
-type ChatInputCommand<T extends CommandType> = (T extends 'Global'
+/** Shorthand for a AutocompleteInteraction with guild scope */
+type GuildAutocompleteInteraction = AutocompleteInteraction<'cached'>;
+
+/** Possible command contexts */
+type CommandContext = 'Global' | 'Guild';
+
+/** Defines how the bot handles an Application Command */
+type ApplicationCommandHandler = ChatInputCommandHandler<CommandContext>;
+
+/** Defines how the bot handles a Global Chat Input Command */
+type ChatInputCommandHandler<T extends CommandContext = 'Global'> = (T extends 'Global'
 	? {
-			readonly respond: GlobalChatInputCommandHandler;
-			readonly autocomplete?: GlobalChatInputAutocompleteHandler;
-			readonly type: T;
+			readonly respond: GlobalChatInputCommandResponder;
+			readonly autocomplete?: GlobalChatInputAutocompleteResponder;
+			readonly allowedInDm: true;
 	  }
 	: {
-			readonly respond: GuildChatInputCommandHandler;
-			readonly autocomplete?: GuildChatInputAutocompleteHandler;
-			readonly type: T;
+			readonly respond: GuildChatInputCommandResponder;
+			readonly autocomplete?: GuildChatInputAutocompleteResponder;
+			readonly allowedInDm: false;
 	  }) & {
-	readonly data: ChatInputApplicationCommandData;
+	readonly name: string;
 	readonly ephemeral?: boolean;
-	readonly allowedUsers?: string[];
+	readonly type: 'chatInputCommand';
 };

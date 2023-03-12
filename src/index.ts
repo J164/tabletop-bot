@@ -1,15 +1,15 @@
 import { env } from 'node:process';
 import { ActivityType, Client, GatewayIntentBits, Partials } from 'discord.js';
 import { onInteractionCreate } from './event-handlers/interaction-create.js';
+import { onReady } from './event-handlers/ready.js';
 
-const client = new Client({
+await new Client({
 	intents: [GatewayIntentBits.Guilds],
 	partials: [Partials.Channel],
 	presence: {
 		activities: [{ name: env.STATUS ?? '', type: ActivityType.Playing }],
 	},
-});
-
-client.on('interactionCreate', onInteractionCreate);
-
-await client.login(env.TOKEN);
+})
+	.once('ready', onReady)
+	.on('interactionCreate', onInteractionCreate)
+	.login(env.TOKEN);
