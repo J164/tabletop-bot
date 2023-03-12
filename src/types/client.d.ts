@@ -37,16 +37,16 @@ type CommandContext = 'Global' | 'Guild';
 type ApplicationCommandHandler = ChatInputCommandHandler<CommandContext>;
 
 /** Defines how the bot handles a Global Chat Input Command */
-type ChatInputCommandHandler<T extends CommandContext> = (T extends 'Global'
+type ChatInputCommandHandler<T extends CommandContext = 'Global'> = (T extends 'Global'
 	? {
 			readonly respond: GlobalChatInputCommandResponder;
 			readonly autocomplete?: GlobalChatInputAutocompleteResponder;
-			readonly context: T;
+			readonly allowedInDm: true;
 	  }
 	: {
 			readonly respond: GuildChatInputCommandResponder;
 			readonly autocomplete?: GuildChatInputAutocompleteResponder;
-			readonly context: T;
+			readonly allowedInDm: false;
 	  }) & {
 	readonly name: string;
 	readonly ephemeral?: boolean;

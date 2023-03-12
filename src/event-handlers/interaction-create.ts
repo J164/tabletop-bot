@@ -57,7 +57,7 @@ async function handleChatInputCommand(interaction: ChatInputCommandInteraction):
 
 	interactionLogger.info(interaction, 'Chat Input Command Interaction deferred');
 
-	if (command.context === 'Guild') {
+	if (!command.allowedInDm) {
 		if (!interaction.inCachedGuild()) {
 			await interaction.editReply(responseOptions(EmbedType.Error, 'This command can only be used in servers!'));
 			return;
@@ -97,7 +97,7 @@ async function handleChatInputAutocomplete(interaction: AutocompleteInteraction)
 		options: interaction.options,
 	});
 
-	if (command.context === 'Guild') {
+	if (!command.allowedInDm) {
 		if (!interaction.inCachedGuild()) {
 			await interaction.respond([]);
 			return;

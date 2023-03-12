@@ -38,7 +38,7 @@ export function responseEmbed(type: EmbedType, title: string, options?: Omit<API
 			break;
 		}
 
-		case EmbedType.None: {
+		default: {
 			embed.title = title;
 			break;
 		}

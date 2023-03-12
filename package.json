@@ -45,7 +45,6 @@
       "plugin:unicorn/recommended"
     ],
     "rules": {
-      "default-case": "off",
       "@typescript-eslint/naming-convention": "off",
       "@typescript-eslint/no-implicit-any-catch": "off",
       "unicorn/prevent-abbreviations": "off"

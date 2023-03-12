@@ -2,5 +2,26 @@
 	{
 		"name": "help",
 		"description": "Displays the help menu"
+	},
+	{
+		"name": "blackjack",
+		"description": "",
+		"options": [
+			{
+				"type": 1,
+				"name": "play",
+				"description": ""
+			},
+			{
+				"type": 1,
+				"name": "rules",
+				"description": ""
+			},
+			{
+				"type": 1,
+				"name": "stats",
+				"description": ""
+			}
+		]
 	}
 ]

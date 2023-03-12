@@ -1,14 +1,12 @@
-import { type ChatInputCommandHandler, type GlobalChatInputCommandResponse } from '../types/client.js';
+import { type ChatInputCommandHandler } from '../types/client.js';
 import { EmbedType } from '../types/helpers.js';
 import { responseOptions } from '../util/response-formatters.js';
 
-async function help(response: GlobalChatInputCommandResponse): Promise<void> {
-	await response.interaction.editReply(responseOptions(EmbedType.Info, 'Help'));
-}
-
-export const handler: ChatInputCommandHandler<'Global'> = {
+export const handler: ChatInputCommandHandler = {
 	name: 'help',
-	respond: help,
 	type: 'chatInputCommand',
-	context: 'Global',
+	allowedInDm: true,
+	async respond(response) {
+		await response.interaction.editReply(responseOptions(EmbedType.Info, 'Help'));
+	},
 };
