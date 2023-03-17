@@ -1,52 +1,88 @@
-import { type CardCode, CardRank, CardSuit } from '../types/cards.js';
+import { type CardCode, RankCode, SuitCode } from '../types/cards.js';
 
-const SUITS = [CardSuit.Spades, CardSuit.Clubs, CardSuit.Hearts, CardSuit.Diamonds] as const;
 const RANKS = [
-	CardRank.Ace,
-	CardRank.Two,
-	CardRank.Three,
-	CardRank.Four,
-	CardRank.Five,
-	CardRank.Six,
-	CardRank.Seven,
-	CardRank.Eight,
-	CardRank.Nine,
-	CardRank.Ten,
-	CardRank.Jack,
-	CardRank.Queen,
-	CardRank.King,
+	RankCode.Ace,
+	RankCode.Two,
+	RankCode.Three,
+	RankCode.Four,
+	RankCode.Five,
+	RankCode.Six,
+	RankCode.Seven,
+	RankCode.Eight,
+	RankCode.Nine,
+	RankCode.Ten,
+	RankCode.Jack,
+	RankCode.Queen,
+	RankCode.King,
 ] as const;
+const SUITS = [SuitCode.Spades, SuitCode.Clubs, SuitCode.Hearts, SuitCode.Diamonds] as const;
 
-export function randomCard(options?: { suits?: CardSuit[]; ranks?: CardRank[] }): Card {
-	const suits = options?.suits ?? SUITS;
+export function randomCard(options?: { ranks?: RankCode[]; suits?: SuitCode[] }): Card {
 	const ranks = options?.ranks ?? RANKS;
+	const suits = options?.suits ?? SUITS;
 
-	return new Card(suits[Math.floor(Math.random()) * suits.length], ranks[Math.floor(Math.random() * ranks.length)]);
+	return new Card(ranks[Math.floor(Math.random()) * ranks.length], suits[Math.floor(Math.random()) * suits.length]);
 }
 
 export class Card {
-	public constructor(public readonly suit: CardSuit, public readonly rank: CardRank) {}
+	public constructor(public readonly rank: RankCode, public readonly suit: SuitCode) {}
 
 	public get cardCode(): CardCode {
-		return `${this.rank > 10 ? this.rankName[0].toUpperCase() : this.rank === 10 ? '0' : this.rank.toString()}${this.suitName}` as CardCode;
+		return `${this.rank}${this.suit}`;
 	}
 
-	public get suitName(): string {
-		switch (this.suit) {
-			case CardSuit.Spades: {
-				return 'spades';
+	public get rankName(): string {
+		switch (this.rank) {
+			case RankCode.Ace: {
+				return 'ace';
 			}
 
-			case CardSuit.Clubs: {
-				return 'clubs';
+			case RankCode.Two: {
+				return 'two';
 			}
 
-			case CardSuit.Hearts: {
-				return 'hearts';
+			case RankCode.Three: {
+				return 'three';
 			}
 
-			case CardSuit.Diamonds: {
-				return 'diamonds';
+			case RankCode.Four: {
+				return 'four';
+			}
+
+			case RankCode.Five: {
+				return 'five';
+			}
+
+			case RankCode.Six: {
+				return 'six';
+			}
+
+			case RankCode.Seven: {
+				return 'seven';
+			}
+
+			case RankCode.Eight: {
+				return 'eight';
+			}
+
+			case RankCode.Nine: {
+				return 'nine';
+			}
+
+			case RankCode.Ten: {
+				return 'ten';
+			}
+
+			case RankCode.Jack: {
+				return 'jack';
+			}
+
+			case RankCode.Queen: {
+				return 'queen';
+			}
+
+			case RankCode.King: {
+				return 'king';
 			}
 
 			default: {
@@ -55,58 +91,22 @@ export class Card {
 		}
 	}
 
-	public get rankName(): string {
-		switch (this.rank) {
-			case CardRank.Ace: {
-				return 'ace';
+	public get suitName(): string {
+		switch (this.suit) {
+			case SuitCode.Spades: {
+				return 'spades';
 			}
 
-			case CardRank.Two: {
-				return 'two';
+			case SuitCode.Clubs: {
+				return 'clubs';
 			}
 
-			case CardRank.Three: {
-				return 'three';
+			case SuitCode.Hearts: {
+				return 'hearts';
 			}
 
-			case CardRank.Four: {
-				return 'four';
-			}
-
-			case CardRank.Five: {
-				return 'five';
-			}
-
-			case CardRank.Six: {
-				return 'six';
-			}
-
-			case CardRank.Seven: {
-				return 'seven';
-			}
-
-			case CardRank.Eight: {
-				return 'eight';
-			}
-
-			case CardRank.Nine: {
-				return 'nine';
-			}
-
-			case CardRank.Ten: {
-				return 'ten';
-			}
-
-			case CardRank.Jack: {
-				return 'jack';
-			}
-
-			case CardRank.Queen: {
-				return 'queen';
-			}
-
-			case CardRank.King: {
-				return 'king';
+			case SuitCode.Diamonds: {
+				return 'diamonds';
 			}
 
 			default: {
