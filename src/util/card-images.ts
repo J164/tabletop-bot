@@ -1,8 +1,9 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { Buffer } from 'node:buffer';
 import sharp from 'sharp';
+import { type CardCode } from '../types/cards.js';
 
-type CardCode = `${'2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '0' | 'J' | 'Q' | 'K' | 'A'}${'S' | 'C' | 'H' | 'D'}` | 'back' | 'XX' | 'X1' | 'X2' | 'XX';
+type CardImageCode = CardCode | 'back' | 'XX' | 'X1' | 'X2';
 
 async function getCardImages() {
 	const images: Record<string, Buffer> = {};
@@ -16,12 +17,12 @@ async function getCardImages() {
 			images[fileName] = await readFile(`${fileName}.png`);
 		}),
 	);
-	return images as Record<CardCode, Buffer>;
+	return images as Record<CardImageCode, Buffer>;
 }
 
 const cardImages = await getCardImages();
 
-export function getCardImage(code: CardCode) {
+export function getCardImage(code: CardImageCode) {
 	return Buffer.from(cardImages[code]);
 }
 
@@ -34,7 +35,7 @@ const CARD_HEIGHT = 314;
  * @param width Number of cards to fit in each row
  * @returns A Promise that resolves to the merged image as a png buffer
  */
-export async function mergeImages(cardCodes: CardCode[], width: number): Promise<Buffer> {
+export async function mergeImages(cardCodes: CardImageCode[], width: number): Promise<Buffer> {
 	let numberInRow = 0;
 	let posX = 0;
 	let posY = 0;
