@@ -1,4 +1,4 @@
-import { type CardCode, RankCode, SuitCode } from '../types/cards.js';
+import { type CardCode, RankCode, SuitCode, type CardColor } from '../types/cards.js';
 
 const RANKS = [
 	RankCode.Ace,
@@ -29,6 +29,24 @@ export class Card {
 
 	public get cardCode(): CardCode {
 		return `${this.rank}${this.suit}`;
+	}
+
+	public get cardColor(): CardColor {
+		switch (this.suit) {
+			case SuitCode.Spades:
+			case SuitCode.Clubs: {
+				return 'black';
+			}
+
+			case SuitCode.Hearts:
+			case SuitCode.Diamonds: {
+				return 'red';
+			}
+
+			default: {
+				throw new Error('Invalid card state');
+			}
+		}
 	}
 
 	public get rankName(): string {
@@ -86,7 +104,7 @@ export class Card {
 			}
 
 			default: {
-				return '';
+				throw new Error('Invalid card state');
 			}
 		}
 	}
@@ -110,7 +128,7 @@ export class Card {
 			}
 
 			default: {
-				return '';
+				throw new Error('Invalid card state');
 			}
 		}
 	}
