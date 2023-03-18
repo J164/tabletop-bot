@@ -153,6 +153,10 @@ export class Deck {
 		return this._cards.pop();
 	}
 
+	/**
+	 * Removes a card from the deck and returns it. May result in invalid state if called when the deck is empty.
+	 * @returns The drawn card
+	 */
 	public drawUnsafe(): Card {
 		return this._cards.pop()!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
 	}
