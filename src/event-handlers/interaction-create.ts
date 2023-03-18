@@ -38,7 +38,7 @@ export async function onInteractionCreate(interaction: Interaction): Promise<voi
 }
 
 async function handleChatInputCommand(interaction: ChatInputCommandInteraction): Promise<void> {
-	const command = commands.get(interaction.commandName);
+	const command = commands[interaction.commandName];
 
 	if (!command || command.type !== 'chatInputCommand') {
 		logger.error(interaction, `Could not find handler for Chat Input Command named "${interaction.commandName}"`);
@@ -82,7 +82,7 @@ async function handleChatInputCommand(interaction: ChatInputCommandInteraction):
 }
 
 async function handleChatInputAutocomplete(interaction: AutocompleteInteraction): Promise<void> {
-	const command = commands.get(interaction.commandName);
+	const command = commands[interaction.commandName];
 
 	if (!command?.autocomplete) {
 		logger.error(interaction, `Could not find autocomplete handler for Chat Input Command named "${interaction.commandName}"`);
