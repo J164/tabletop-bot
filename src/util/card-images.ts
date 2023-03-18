@@ -5,6 +5,11 @@ import { type CardCode } from '../types/cards.js';
 
 type CardImageCode = CardCode | 'back' | 'XX' | 'X1' | 'X2';
 
+const CARD_WIDTH = 226;
+const CARD_HEIGHT = 314;
+
+const cardImages = await getCardImages();
+
 async function getCardImages() {
 	const images: Record<string, Buffer> = {};
 
@@ -20,14 +25,14 @@ async function getCardImages() {
 	return images as Record<CardImageCode, Buffer>;
 }
 
-const cardImages = await getCardImages();
-
+/**
+ * Fetches the image for a given card
+ * @param code Code for card to fetch image for
+ * @returns The image as a png buffer
+ */
 export function getCardImage(code: CardImageCode) {
 	return Buffer.from(cardImages[code]);
 }
-
-const CARD_WIDTH = 226;
-const CARD_HEIGHT = 314;
 
 /**
  * Merges a number of card images into one image
