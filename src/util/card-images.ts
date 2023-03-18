@@ -32,31 +32,35 @@ const CARD_HEIGHT = 314;
 /**
  * Merges a number of card images into one image
  * @param cardCodes Array of card codes
- * @param width Number of cards to fit in each row
+ * @param cardsPerRow Number of cards to fit in each row
  * @returns A Promise that resolves to the merged image as a png buffer
  */
-export async function mergeImages(cardCodes: CardImageCode[], width: number): Promise<Buffer> {
+export async function mergeImages(cardCodes: CardImageCode[], cardsPerRow?: number): Promise<Buffer> {
+	const width = cardsPerRow ?? cardCodes.length;
+
 	let numberInRow = 0;
-	let posX = 0;
+	let posX = -CARD_WIDTH;
 	let posY = 0;
 
 	const images = cardCodes.map((cardCode) => {
-		let x;
-
 		if (numberInRow === width) {
-			x = 0;
-			posX = CARD_WIDTH;
+			posX = 0;
 			posY += CARD_HEIGHT;
 			numberInRow = 0;
-		} else {
-			x = posX;
-			posX += CARD_WIDTH;
-			numberInRow++;
+
+			return {
+				input: getCardImage(cardCode),
+				left: 0,
+				top: posY,
+			};
 		}
+
+		posX += CARD_WIDTH;
+		numberInRow++;
 
 		return {
 			input: getCardImage(cardCode),
-			left: x,
+			left: posX,
 			top: posY,
 		};
 	});

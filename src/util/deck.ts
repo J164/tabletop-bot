@@ -116,4 +116,44 @@ export class Card {
 	}
 }
 
-export class Deck {}
+/** Represents a deck of playing cards */
+export class Deck {
+	private readonly _cards: Card[] = [];
+
+	public constructor() {
+		for (const rank of RANKS) {
+			for (const suit of SUITS) {
+				this._cards.push(new Card(rank, suit));
+			}
+		}
+	}
+
+	public get size(): number {
+		return this._cards.length;
+	}
+
+	/**
+	 * Randomizes the order of cards in the deck
+	 * @returns The Deck instance
+	 */
+	public shuffle(): this {
+		for (let index = this._cards.length - 1; index > 0; index--) {
+			const randomIndex = Math.floor(Math.random() * (index + 1));
+			[this._cards[index], this._cards[randomIndex]] = [this._cards[randomIndex], this._cards[index]];
+		}
+
+		return this;
+	}
+
+	/**
+	 * Removes a card from the deck and returns it
+	 * @returns The drawn card or undefined if the deck is empty
+	 */
+	public draw(): Card | undefined {
+		return this._cards.pop();
+	}
+
+	public drawUnsafe(): Card {
+		return this._cards.pop()!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+	}
+}
