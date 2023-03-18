@@ -32,7 +32,7 @@
   "scripts": {
     "build": "tsc",
     "lint": "xo",
-    "deploy": "node build//deploy/deploy.js"
+    "deploy": "node build/deploy/deploy.js"
   },
   "prettier": {
     "bracketSpacing": true,

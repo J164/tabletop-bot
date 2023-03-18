@@ -44,15 +44,9 @@ export async function mergeImages(cardCodes: CardImageCode[], cardsPerRow?: numb
 
 	const images = cardCodes.map((cardCode) => {
 		if (numberInRow === width) {
-			posX = 0;
+			posX = -CARD_WIDTH;
 			posY += CARD_HEIGHT;
 			numberInRow = 0;
-
-			return {
-				input: getCardImage(cardCode),
-				left: 0,
-				top: posY,
-			};
 		}
 
 		posX += CARD_WIDTH;
