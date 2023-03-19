@@ -14,7 +14,7 @@ type GuildChatInputCommandResponder = (response: GuildChatInputCommandResponse, 
 type GuildChatInputAutocompleteResponder = (interaction: GuildAutocompleteInteraction, logger: Logger) => Promise<void>;
 
 /** Interaction info for Chat Input Commands */
-type ChatInputCommand<T extends CacheType> = Omit<InteractionResponse, 'interaction'> & {
+export type ChatInputCommand<T extends CacheType> = Omit<InteractionResponse, 'interaction'> & {
 	interaction: ChatInputCommandInteraction<T>;
 };
 
@@ -34,10 +34,10 @@ type GuildAutocompleteInteraction = AutocompleteInteraction<'cached'>;
 type CommandContext = 'Global' | 'Guild';
 
 /** Defines how the bot handles an Application Command */
-type ApplicationCommandHandler = ChatInputCommandHandler<CommandContext>;
+export type ApplicationCommandHandler = ChatInputCommandHandler<CommandContext>;
 
 /** Defines how the bot handles a Global Chat Input Command */
-type ChatInputCommandHandler<T extends CommandContext = 'Global'> = (T extends 'Global'
+export type ChatInputCommandHandler<T extends CommandContext = 'Global'> = (T extends 'Global'
 	? {
 			readonly respond: GlobalChatInputCommandResponder;
 			readonly autocomplete?: GlobalChatInputAutocompleteResponder;

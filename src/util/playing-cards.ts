@@ -17,6 +17,13 @@ const RANKS = [
 ] as const;
 const SUITS = [SuitCode.Spades, SuitCode.Clubs, SuitCode.Hearts, SuitCode.Diamonds] as const;
 
+export function randomCard(options?: { ranks?: RankCode[]; suits?: SuitCode[] }): Card {
+	const ranks = options?.ranks ?? RANKS;
+	const suits = options?.suits ?? SUITS;
+
+	return new Card(ranks[Math.floor(Math.random()) * ranks.length], suits[Math.floor(Math.random()) * suits.length]);
+}
+
 export function* generateCards(): Generator<Card, never> {
 	const deck = new Deck().shuffle();
 
@@ -27,13 +34,6 @@ export function* generateCards(): Generator<Card, never> {
 	yield* generateCards();
 
 	throw new Error('unreachable');
-}
-
-export function randomCard(options?: { ranks?: RankCode[]; suits?: SuitCode[] }): Card {
-	const ranks = options?.ranks ?? RANKS;
-	const suits = options?.suits ?? SUITS;
-
-	return new Card(ranks[Math.floor(Math.random()) * ranks.length], suits[Math.floor(Math.random()) * suits.length]);
 }
 
 export class Card {

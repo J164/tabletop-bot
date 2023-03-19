@@ -1,5 +1,5 @@
-type CardCode = `${RankCode}${SuitCode}`;
-type CardColor = 'black' | 'red';
+export type CardCode = `${RankCode}${SuitCode}`;
+export type CardColor = 'black' | 'red';
 
 /** Enum representing possible playing card ranks */
 export const enum RankCode {

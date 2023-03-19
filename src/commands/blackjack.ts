@@ -11,7 +11,7 @@ export const handler: ChatInputCommandHandler = {
 		switch (response.interaction.options.getSubcommand()) {
 			case 'play': {
 				await response.interaction.editReply(responseOptions(EmbedType.Info, 'Starting game...'));
-				await startBlackjack();
+				await startBlackjack(await response.interaction.user.createDM());
 				break;
 			}
 

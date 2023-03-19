@@ -14,5 +14,6 @@
     // Language and Environment
     "target": "ES2022",
   },
-  "include": ["src/**/*", "deploy/**/*"]
+  "include": ["src/**/*", "deploy/**/*"],
+  "exclude": ["**/*.test.ts"]
 }
