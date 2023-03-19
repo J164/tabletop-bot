@@ -17,6 +17,18 @@ const RANKS = [
 ] as const;
 const SUITS = [SuitCode.Spades, SuitCode.Clubs, SuitCode.Hearts, SuitCode.Diamonds] as const;
 
+export function* generateCards(): Generator<Card, never> {
+	const deck = new Deck().shuffle();
+
+	while (deck.size > 0) {
+		yield deck.drawUnsafe();
+	}
+
+	yield* generateCards();
+
+	throw new Error('unreachable');
+}
+
 export function randomCard(options?: { ranks?: RankCode[]; suits?: SuitCode[] }): Card {
 	const ranks = options?.ranks ?? RANKS;
 	const suits = options?.suits ?? SUITS;

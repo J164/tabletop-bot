@@ -1,21 +1,86 @@
-import { ButtonStyle, ComponentType, type MessageCreateOptions, type DMChannel } from 'discord.js';
-import { type Logger } from 'pino';
+import { ButtonStyle, ComponentType, type DMChannel, type APIEmbed, type BufferResolvable } from 'discord.js';
 import { RankCode } from '../types/cards.js';
 import { EmbedType } from '../types/helpers.js';
 import { mergeImages } from '../util/card-images.js';
-import { Deck, type Card } from '../util/deck.js';
+import { generateCards, type Card } from '../util/playing-cards.js';
 import { messageOptions, responseEmbed } from '../util/response-formatters.js';
 
-export async function startBlackjack(channel: DMChannel, logger: Logger) {
-	const deck = new Deck().shuffle();
+export async function startBlackjack(channel: DMChannel) {
+	const deck = generateCards();
 
-	const player = [deck.drawUnsafe(), deck.drawUnsafe()];
-	const dealer = [deck.drawUnsafe(), deck.drawUnsafe()];
+	const player = [deck.next().value, deck.next().value];
+	const dealer = [deck.next().value, deck.next().value];
 
 	await promptPlayer(player, dealer, deck, channel);
+
+	let dealerScore = scoreHand(dealer);
+	while (dealerScore < 17) {
+		dealer.push(deck.next().value);
+		dealerScore = scoreHand(dealer);
+	}
+
+	const playerScore = scoreHand(player);
+
+	let result;
+	if (playerScore > 21) {
+		result = 'Bust!';
+	} else if (playerScore === 21) {
+		result = 'Blackjack!';
+	} else if (playerScore === dealerScore) {
+		result = 'Push!';
+	} else if (playerScore > dealerScore) {
+		result = 'Win!';
+	} else {
+		result = 'Lose!';
+	}
+
+	const { embeds, files } = await printStandings(player, dealer, true);
+
+	const message = await channel.send(
+		messageOptions({
+			embeds: [responseEmbed(EmbedType.Info, result), ...embeds],
+			files,
+			components: [
+				{
+					type: ComponentType.ActionRow,
+					components: [
+						{
+							type: ComponentType.Button,
+							custom_id: 'continue',
+							label: 'Play Again?',
+							style: ButtonStyle.Primary,
+						},
+						{
+							type: ComponentType.Button,
+							custom_id: 'end',
+							label: 'Cash Out',
+							style: ButtonStyle.Secondary,
+						},
+					],
+				},
+			],
+		}),
+	);
+
+	let component;
+	try {
+		component = await message.awaitMessageComponent({
+			componentType: ComponentType.Button,
+			time: 300_000,
+		});
+	} catch {
+		await message.edit({ components: [] });
+		return;
+	}
+
+	await component.update({ components: [] });
+
+	if (component.customId === 'continue') {
+		await startBlackjack(channel);
+	}
 }
 
-async function promptPlayer(player: Card[], dealer: Card[], deck: Deck, channel: DMChannel) {
+async function promptPlayer(player: Card[], dealer: Card[], deck: Generator<Card, never>, channel: DMChannel) {
 	const message = await channel.send(
 		messageOptions({
 			...(await printStandings(player, dealer)),
@@ -41,19 +106,31 @@ async function promptPlayer(player: Card[], dealer: Card[], deck: Deck, channel:
 		}),
 	);
 
-	const component = await message.awaitMessageComponent({
-		componentType: ComponentType.Button,
-		time: 300_000,
-	});
+	let component;
+	try {
+		component = await message.awaitMessageComponent({
+			componentType: ComponentType.Button,
+			time: 300_000,
+		});
+	} catch {
+		await message.edit(messageOptions({ components: [] }));
+		return;
+	}
 
 	await component.update(messageOptions({ components: [] }));
 
 	if (component.customId === 'hit') {
-		// TODO: do things and return something?
+		player.push(deck.next().value);
+
+		if (scoreHand(player) > 21) {
+			return;
+		}
+
+		await promptPlayer(player, dealer, deck, channel);
 	}
 }
 
-async function printStandings(playerHand: Card[], dealerHand: Card[], playerDone = false): Promise<MessageCreateOptions> {
+async function printStandings(playerHand: Card[], dealerHand: Card[], playerDone = false): Promise<{ embeds: APIEmbed[]; files: BufferResolvable[] }> {
 	return {
 		embeds: [
 			responseEmbed(EmbedType.Info, 'Player', { fields: [{ name: 'Value', value: scoreHand(playerHand).toString(), inline: true }] }),
