@@ -2,20 +2,20 @@ import { ButtonStyle, ComponentType, type DMChannel, type APIEmbed, type BufferR
 import { RankCode } from '../types/cards.js';
 import { EmbedType } from '../types/helpers.js';
 import { mergeImages } from '../util/card-images.js';
-import { generateCards, type Card } from '../util/playing-cards.js';
+import { cardGenerator, type Card } from '../util/playing-cards.js';
 import { messageOptions, responseEmbed } from '../util/response-formatters.js';
 
 export async function startBlackjack(channel: DMChannel) {
-	const deck = generateCards();
+	const nextCard = cardGenerator();
 
-	const player = [deck.next().value, deck.next().value];
-	const dealer = [deck.next().value, deck.next().value];
+	const player = [nextCard(), nextCard()];
+	const dealer = [nextCard(), nextCard()];
 
-	await promptPlayer(player, dealer, deck, channel);
+	await promptPlayer(player, dealer, nextCard, channel);
 
 	let dealerScore = scoreHand(dealer);
 	while (dealerScore < 17) {
-		dealer.push(deck.next().value);
+		dealer.push(nextCard());
 		dealerScore = scoreHand(dealer);
 	}
 
@@ -80,7 +80,7 @@ export async function startBlackjack(channel: DMChannel) {
 	}
 }
 
-async function promptPlayer(player: Card[], dealer: Card[], deck: Generator<Card, never>, channel: DMChannel) {
+async function promptPlayer(player: Card[], dealer: Card[], nextCard: () => Card, channel: DMChannel) {
 	const message = await channel.send(
 		messageOptions({
 			...(await printStandings(player, dealer)),
@@ -120,22 +120,24 @@ async function promptPlayer(player: Card[], dealer: Card[], deck: Generator<Card
 	await component.update(messageOptions({ components: [] }));
 
 	if (component.customId === 'hit') {
-		player.push(deck.next().value);
+		player.push(nextCard());
 
 		if (scoreHand(player) > 21) {
 			return;
 		}
 
-		await promptPlayer(player, dealer, deck, channel);
+		await promptPlayer(player, dealer, nextCard, channel);
 	}
 }
 
 async function printStandings(playerHand: Card[], dealerHand: Card[], playerDone = false): Promise<{ embeds: APIEmbed[]; files: BufferResolvable[] }> {
+	// TODO: fix images not appearing in embed
+
 	return {
 		embeds: [
 			responseEmbed(EmbedType.Info, 'Player', { fields: [{ name: 'Value', value: scoreHand(playerHand).toString(), inline: true }] }),
 			responseEmbed(EmbedType.Info, 'Dealer', {
-				fields: [{ name: 'Value', value: scoreHand(playerDone ? [dealerHand[0]] : dealerHand).toString(), inline: true }],
+				fields: [{ name: 'Value', value: scoreHand(playerDone ? dealerHand : [dealerHand[0]]).toString(), inline: true }],
 			}),
 		],
 		files: await Promise.all([
@@ -145,7 +147,7 @@ async function printStandings(playerHand: Card[], dealerHand: Card[], playerDone
 				}),
 			),
 			mergeImages(
-				(playerDone ? ([dealerHand[0], { cardCode: 'back' }] as const) : dealerHand).map((card) => {
+				(playerDone ? dealerHand : ([dealerHand[0], { cardCode: 'back' }] as const)).map((card) => {
 					return card.cardCode;
 				}),
 			),

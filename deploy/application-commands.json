@@ -5,22 +5,22 @@
 	},
 	{
 		"name": "blackjack",
-		"description": "",
+		"description": "[PLACEHOLDER]",
 		"options": [
 			{
 				"type": 1,
 				"name": "play",
-				"description": ""
+				"description": "[PLACEHOLDER]"
 			},
 			{
 				"type": 1,
 				"name": "rules",
-				"description": ""
+				"description": "[PLACEHOLDER]"
 			},
 			{
 				"type": 1,
 				"name": "stats",
-				"description": ""
+				"description": "[PLACEHOLDER]"
 			}
 		]
 	}

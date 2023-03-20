@@ -13,13 +13,11 @@ const cardImages = await getCardImages();
 async function getCardImages() {
 	const images: Record<string, Buffer> = {};
 
-	const fileNames = await readdir('./static/img/cards', {
-		withFileTypes: false,
-	});
+	const fileNames = await readdir('./static/img/cards');
 
 	await Promise.all(
 		fileNames.map(async (fileName) => {
-			images[fileName] = await readFile(`${fileName}.png`);
+			images[fileName.slice(0, -4)] = await readFile(`./static/img/cards/${fileName}`);
 		}),
 	);
 	return images as Record<CardImageCode, Buffer>;

@@ -24,16 +24,16 @@ export function randomCard(options?: { ranks?: RankCode[]; suits?: SuitCode[] })
 	return new Card(ranks[Math.floor(Math.random()) * ranks.length], suits[Math.floor(Math.random()) * suits.length]);
 }
 
-export function* generateCards(): Generator<Card, never> {
-	const deck = new Deck().shuffle();
+export function cardGenerator() {
+	let deck = new Deck().shuffle();
 
-	while (deck.size > 0) {
-		yield deck.drawUnsafe();
-	}
+	return () => {
+		if (deck.size === 0) {
+			deck = new Deck();
+		}
 
-	yield* generateCards();
-
-	throw new Error('unreachable');
+		return deck.drawUnsafe();
+	};
 }
 
 export class Card {
