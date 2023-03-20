@@ -1,4 +1,4 @@
-import { ButtonStyle, ComponentType, type DMChannel, type APIEmbed, type BufferResolvable } from 'discord.js';
+import { ButtonStyle, ComponentType, type DMChannel } from 'discord.js';
 import { RankCode } from '../types/cards.js';
 import { EmbedType } from '../types/helpers.js';
 import { mergeImages } from '../util/card-images.js';
@@ -28,7 +28,7 @@ export async function startBlackjack(channel: DMChannel) {
 		result = 'Blackjack!';
 	} else if (playerScore === dealerScore) {
 		result = 'Push!';
-	} else if (playerScore > dealerScore) {
+	} else if (playerScore > dealerScore || dealerScore > 21) {
 		result = 'Win!';
 	} else {
 		result = 'Lose!';
@@ -130,27 +130,35 @@ async function promptPlayer(player: Card[], dealer: Card[], nextCard: () => Card
 	}
 }
 
-async function printStandings(playerHand: Card[], dealerHand: Card[], playerDone = false): Promise<{ embeds: APIEmbed[]; files: BufferResolvable[] }> {
-	// TODO: fix images not appearing in embed
-
+async function printStandings(playerHand: Card[], dealerHand: Card[], playerDone = false) {
 	return {
 		embeds: [
-			responseEmbed(EmbedType.Info, 'Player', { fields: [{ name: 'Value', value: scoreHand(playerHand).toString(), inline: true }] }),
+			responseEmbed(EmbedType.Info, 'Player', {
+				fields: [{ name: 'Value', value: scoreHand(playerHand).toString(), inline: true }],
+				image: { url: 'attachment://player.png' },
+			}),
 			responseEmbed(EmbedType.Info, 'Dealer', {
 				fields: [{ name: 'Value', value: scoreHand(playerDone ? dealerHand : [dealerHand[0]]).toString(), inline: true }],
+				image: { url: 'attachment://dealer.png' },
 			}),
 		],
 		files: await Promise.all([
-			mergeImages(
-				playerHand.map((card) => {
-					return card.cardCode;
-				}),
-			),
-			mergeImages(
-				(playerDone ? dealerHand : ([dealerHand[0], { cardCode: 'back' }] as const)).map((card) => {
-					return card.cardCode;
-				}),
-			),
+			{
+				name: 'player.png',
+				attachment: await mergeImages(
+					playerHand.map((card) => {
+						return card.cardCode;
+					}),
+				),
+			},
+			{
+				name: 'dealer.png',
+				attachment: await mergeImages(
+					(playerDone ? dealerHand : ([dealerHand[0], { cardCode: 'back' }] as const)).map((card) => {
+						return card.cardCode;
+					}),
+				),
+			},
 		]),
 	};
 }
