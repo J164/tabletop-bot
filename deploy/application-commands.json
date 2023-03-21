@@ -5,22 +5,22 @@
 	},
 	{
 		"name": "blackjack",
-		"description": "[PLACEHOLDER]",
+		"description": "A classic casino game played against the house",
 		"options": [
 			{
 				"type": 1,
 				"name": "play",
-				"description": "[PLACEHOLDER]"
+				"description": "Play Blackjack"
 			},
 			{
 				"type": 1,
 				"name": "rules",
-				"description": "[PLACEHOLDER]"
+				"description": "Learn to play Blackjack"
 			},
 			{
 				"type": 1,
 				"name": "stats",
-				"description": "[PLACEHOLDER]"
+				"description": "See your Blackjack stats"
 			}
 		]
 	}
