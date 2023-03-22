@@ -1,4 +1,4 @@
-import { type APIEmbed, type BaseMessageOptions, type APIActionRowComponent, type APIMessageActionRowComponent } from 'discord.js';
+import { type APIEmbed, type BaseMessageOptions } from 'discord.js';
 import { BotColors, EmbedType, Emojis } from '../types/helpers.js';
 
 /**
@@ -9,8 +9,6 @@ import { BotColors, EmbedType, Emojis } from '../types/helpers.js';
  * @returns The formated embed
  */
 export function responseEmbed(type: EmbedType, title: string, options?: Omit<APIEmbed, 'title'>): APIEmbed {
-	options?.fields?.splice(25);
-
 	const embed: APIEmbed = options ?? {};
 
 	switch (type) {
@@ -56,18 +54,4 @@ export function responseEmbed(type: EmbedType, title: string, options?: Omit<API
  */
 export function responseOptions(type: EmbedType, title: string, options?: APIEmbed): BaseMessageOptions {
 	return { embeds: [responseEmbed(type, title, options)] };
-}
-
-/**
- * Sanitizes a message to ensure it adheres to the API spec
- * @param options The message to sanitize
- * @returns The sanitized message
- */
-export function messageOptions(
-	options: BaseMessageOptions & { embeds?: APIEmbed[]; components?: Array<APIActionRowComponent<APIMessageActionRowComponent>> },
-): BaseMessageOptions {
-	options.embeds?.splice(10);
-	options.components?.splice(5);
-
-	return options;
 }

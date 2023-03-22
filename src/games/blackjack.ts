@@ -3,7 +3,7 @@ import { RankCode } from '../types/cards.js';
 import { EmbedType } from '../types/helpers.js';
 import { mergeImages } from '../util/card-images.js';
 import { cardGenerator, type Card } from '../util/playing-cards.js';
-import { messageOptions, responseEmbed } from '../util/response-formatters.js';
+import { responseEmbed } from '../util/response-formatters.js';
 
 export async function startBlackjack(channel: DMChannel) {
 	const nextCard = cardGenerator();
@@ -36,31 +36,29 @@ export async function startBlackjack(channel: DMChannel) {
 
 	const { embeds, files } = await printStandings(player, dealer, true);
 
-	const message = await channel.send(
-		messageOptions({
-			embeds: [responseEmbed(EmbedType.Info, result), ...embeds],
-			files,
-			components: [
-				{
-					type: ComponentType.ActionRow,
-					components: [
-						{
-							type: ComponentType.Button,
-							custom_id: 'continue',
-							label: 'Play Again?',
-							style: ButtonStyle.Primary,
-						},
-						{
-							type: ComponentType.Button,
-							custom_id: 'end',
-							label: 'Cash Out',
-							style: ButtonStyle.Secondary,
-						},
-					],
-				},
-			],
-		}),
-	);
+	const message = await channel.send({
+		embeds: [responseEmbed(EmbedType.Info, result), ...embeds],
+		files,
+		components: [
+			{
+				type: ComponentType.ActionRow,
+				components: [
+					{
+						type: ComponentType.Button,
+						custom_id: 'continue',
+						label: 'Play Again?',
+						style: ButtonStyle.Primary,
+					},
+					{
+						type: ComponentType.Button,
+						custom_id: 'end',
+						label: 'Cash Out',
+						style: ButtonStyle.Secondary,
+					},
+				],
+			},
+		],
+	});
 
 	let component;
 	try {
@@ -81,30 +79,28 @@ export async function startBlackjack(channel: DMChannel) {
 }
 
 async function promptPlayer(player: Card[], dealer: Card[], nextCard: () => Card, channel: DMChannel) {
-	const message = await channel.send(
-		messageOptions({
-			...(await printStandings(player, dealer)),
-			components: [
-				{
-					type: ComponentType.ActionRow,
-					components: [
-						{
-							type: ComponentType.Button,
-							custom_id: 'hit',
-							style: ButtonStyle.Primary,
-							label: 'Hit',
-						},
-						{
-							type: ComponentType.Button,
-							custom_id: 'stand',
-							style: ButtonStyle.Secondary,
-							label: 'Stand',
-						},
-					],
-				},
-			],
-		}),
-	);
+	const message = await channel.send({
+		...(await printStandings(player, dealer)),
+		components: [
+			{
+				type: ComponentType.ActionRow,
+				components: [
+					{
+						type: ComponentType.Button,
+						custom_id: 'hit',
+						style: ButtonStyle.Primary,
+						label: 'Hit',
+					},
+					{
+						type: ComponentType.Button,
+						custom_id: 'stand',
+						style: ButtonStyle.Secondary,
+						label: 'Stand',
+					},
+				],
+			},
+		],
+	});
 
 	let component;
 	try {
@@ -113,11 +109,11 @@ async function promptPlayer(player: Card[], dealer: Card[], nextCard: () => Card
 			time: 300_000,
 		});
 	} catch {
-		await message.edit(messageOptions({ components: [] }));
+		await message.edit({ components: [] });
 		return;
 	}
 
-	await component.update(messageOptions({ components: [] }));
+	await component.update({ components: [] });
 
 	if (component.customId === 'hit') {
 		player.push(nextCard());
