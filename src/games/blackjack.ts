@@ -1,11 +1,11 @@
-import { ButtonStyle, ComponentType, type DMChannel } from 'discord.js';
+import { type APIEmbed, type AttachmentPayload, ButtonStyle, ComponentType, type DMChannel } from 'discord.js';
 import { RankCode } from '../types/cards.js';
 import { EmbedType } from '../types/helpers.js';
 import { mergeImages } from '../util/card-images.js';
 import { cardGenerator, type Card } from '../util/playing-cards.js';
 import { responseEmbed } from '../util/response-formatters.js';
 
-export async function startBlackjack(channel: DMChannel) {
+export async function startBlackjack(channel: DMChannel): Promise<void> {
 	const nextCard = cardGenerator();
 
 	const player = [nextCard(), nextCard()];
@@ -78,7 +78,7 @@ export async function startBlackjack(channel: DMChannel) {
 	}
 }
 
-async function promptPlayer(player: Card[], dealer: Card[], nextCard: () => Card, channel: DMChannel) {
+async function promptPlayer(player: Card[], dealer: Card[], nextCard: () => Card, channel: DMChannel): Promise<void> {
 	const message = await channel.send({
 		...(await printStandings(player, dealer)),
 		components: [
@@ -126,7 +126,7 @@ async function promptPlayer(player: Card[], dealer: Card[], nextCard: () => Card
 	}
 }
 
-async function printStandings(playerHand: Card[], dealerHand: Card[], playerDone = false) {
+async function printStandings(playerHand: Card[], dealerHand: Card[], playerDone = false): Promise<{ embeds: APIEmbed[]; files: AttachmentPayload[] }> {
 	return {
 		embeds: [
 			responseEmbed(EmbedType.Info, 'Player', {
@@ -143,15 +143,15 @@ async function printStandings(playerHand: Card[], dealerHand: Card[], playerDone
 				name: 'player.png',
 				attachment: await mergeImages(
 					playerHand.map((card) => {
-						return card.cardCode;
+						return card.code;
 					}),
 				),
 			},
 			{
 				name: 'dealer.png',
 				attachment: await mergeImages(
-					(playerDone ? dealerHand : ([dealerHand[0], { cardCode: 'back' }] as const)).map((card) => {
-						return card.cardCode;
+					(playerDone ? dealerHand : ([dealerHand[0], { code: 'back' }] as const)).map((card) => {
+						return card.code;
 					}),
 				),
 			},
@@ -216,10 +216,6 @@ function scoreHand(hand: Array<{ rank: RankCode }>): number {
 			case RankCode.Queen:
 			case RankCode.King: {
 				score += 10;
-				break;
-			}
-
-			default: {
 				break;
 			}
 		}

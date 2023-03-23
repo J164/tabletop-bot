@@ -1,3 +1,4 @@
+import { randomInt } from 'node:crypto';
 import { type CardCode, RankCode, SuitCode, type CardColor } from '../types/cards.js';
 
 const RANKS = [
@@ -21,10 +22,10 @@ export function randomCard(options?: { ranks?: RankCode[]; suits?: SuitCode[] })
 	const ranks = options?.ranks ?? RANKS;
 	const suits = options?.suits ?? SUITS;
 
-	return new Card(ranks[Math.floor(Math.random()) * ranks.length], suits[Math.floor(Math.random()) * suits.length]);
+	return new Card(ranks[randomInt(0, ranks.length)], suits[randomInt(0, suits.length)]);
 }
 
-export function cardGenerator() {
+export function cardGenerator(): () => Card {
 	let deck = new Deck().shuffle();
 
 	return () => {
@@ -39,11 +40,11 @@ export function cardGenerator() {
 export class Card {
 	public constructor(public readonly rank: RankCode, public readonly suit: SuitCode) {}
 
-	public get cardCode(): CardCode {
+	public get code(): CardCode {
 		return `${this.rank}${this.suit}`;
 	}
 
-	public get cardColor(): CardColor {
+	public get color(): CardColor {
 		switch (this.suit) {
 			case SuitCode.Spades:
 			case SuitCode.Clubs: {
@@ -53,10 +54,6 @@ export class Card {
 			case SuitCode.Hearts:
 			case SuitCode.Diamonds: {
 				return 'red';
-			}
-
-			default: {
-				throw new Error('Invalid card state');
 			}
 		}
 	}
@@ -114,10 +111,6 @@ export class Card {
 			case RankCode.King: {
 				return 'king';
 			}
-
-			default: {
-				throw new Error('Invalid card state');
-			}
 		}
 	}
 
@@ -137,10 +130,6 @@ export class Card {
 
 			case SuitCode.Diamonds: {
 				return 'diamonds';
-			}
-
-			default: {
-				throw new Error('Invalid card state');
 			}
 		}
 	}
@@ -168,7 +157,7 @@ export class Deck {
 	 */
 	public shuffle(): this {
 		for (let index = this._cards.length - 1; index > 0; index--) {
-			const randomIndex = Math.floor(Math.random() * (index + 1));
+			const randomIndex = randomInt(0, index + 1);
 			[this._cards[index], this._cards[randomIndex]] = [this._cards[randomIndex], this._cards[index]];
 		}
 

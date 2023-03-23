@@ -10,7 +10,7 @@ const CARD_HEIGHT = 314;
 
 const cardImages = await getCardImages();
 
-async function getCardImages() {
+async function getCardImages(): Promise<Record<CardImageCode, Buffer>> {
 	const images: Record<string, Buffer> = {};
 
 	const fileNames = await readdir('./static/img/cards');
@@ -20,7 +20,7 @@ async function getCardImages() {
 			images[fileName.slice(0, -4)] = await readFile(`./static/img/cards/${fileName}`);
 		}),
 	);
-	return images as Record<CardImageCode, Buffer>;
+	return images;
 }
 
 /**
@@ -28,7 +28,7 @@ async function getCardImages() {
  * @param code Code for card to fetch image for
  * @returns The image as a png buffer
  */
-export function getCardImage(code: CardImageCode) {
+export function getCardImage(code: CardImageCode): Buffer {
 	return Buffer.from(cardImages[code]);
 }
 

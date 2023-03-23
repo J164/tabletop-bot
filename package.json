@@ -50,8 +50,11 @@
       "plugin:unicorn/recommended"
     ],
     "rules": {
+      "default-case": "off",
+      "@typescript-eslint/explicit-function-return-type": "error",
       "@typescript-eslint/naming-convention": "off",
       "@typescript-eslint/no-implicit-any-catch": "off",
+      "@typescript-eslint/switch-exhaustiveness-check": "warn",
       "unicorn/prevent-abbreviations": "off"
     }
   }

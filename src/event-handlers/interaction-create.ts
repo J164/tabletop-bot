@@ -19,7 +19,6 @@ export async function onInteractionCreate(interaction: Interaction): Promise<voi
 
 	if (interaction.isAutocomplete()) {
 		await handleChatInputAutocomplete(interaction);
-		return;
 	}
 
 	/* TODO:
@@ -33,15 +32,13 @@ export async function onInteractionCreate(interaction: Interaction): Promise<voi
 		return;
 	}
 	*/
-
-	logger.info(interaction, 'Interaction recieved and not actioned by global event handler');
 }
 
 async function handleChatInputCommand(interaction: ChatInputCommandInteraction): Promise<void> {
 	const command = commands[interaction.commandName];
 
 	if (!command || command.type !== 'chatInputCommand') {
-		logger.error(interaction, `Could not find handler for Chat Input Command named "${interaction.commandName}"`);
+		logger.error(`Could not find handler for Chat Input Command named "${interaction.commandName}"`);
 		await interaction.reply(responseOptions(EmbedType.Error, 'Something went wrong!'));
 		return;
 	}
@@ -54,8 +51,6 @@ async function handleChatInputCommand(interaction: ChatInputCommandInteraction):
 		commandName: interaction.commandName,
 		options: interaction.options,
 	});
-
-	interactionLogger.info(interaction, 'Chat Input Command Interaction deferred');
 
 	if (!command.allowedInDm) {
 		if (!interaction.inCachedGuild()) {

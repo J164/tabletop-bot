@@ -1,6 +1,6 @@
 import { expect, it, describe } from 'vitest';
 import { RankCode, SuitCode } from '../types/cards.js';
-import { Card, randomCard } from './playing-cards.js';
+import { Card, cardGenerator, randomCard } from './playing-cards.js';
 
 const allCards = [
 	new Card(RankCode.Ace, SuitCode.Spades),
@@ -58,85 +58,89 @@ const allCards = [
 ] as const;
 
 describe('randomCard()', () => {
-	it('should return a card', () => {
-		// TODO: mock random number generator for this test
+	it.todo('should return random cards', () => {
 		expect(randomCard()).toBeInstanceOf(Card);
+	});
+});
+
+describe('cardGenerator()', () => {
+	it.todo('should return random cards', () => {
+		const next = cardGenerator();
+
+		expect(next()).toBeInstanceOf(Card);
+	});
+
+	it.todo('should regenerate the deck when exhausted', () => {
+		const next = cardGenerator();
+
+		expect(next()).toBeInstanceOf(Card);
 	});
 });
 
 describe('Card', () => {
 	const cardProperties = [
-		{ code: 'AS', rank: 'ace', suit: 'spades', color: 'black' },
-		{ code: 'AD', rank: 'ace', suit: 'diamonds', color: 'red' },
-		{ code: 'AC', rank: 'ace', suit: 'clubs', color: 'black' },
-		{ code: 'AH', rank: 'ace', suit: 'hearts', color: 'red' },
-		{ code: '2S', rank: 'two', suit: 'spades', color: 'black' },
-		{ code: '2D', rank: 'two', suit: 'diamonds', color: 'red' },
-		{ code: '2C', rank: 'two', suit: 'clubs', color: 'black' },
-		{ code: '2H', rank: 'two', suit: 'hearts', color: 'red' },
-		{ code: '3S', rank: 'three', suit: 'spades', color: 'black' },
-		{ code: '3D', rank: 'three', suit: 'diamonds', color: 'red' },
-		{ code: '3C', rank: 'three', suit: 'clubs', color: 'black' },
-		{ code: '3H', rank: 'three', suit: 'hearts', color: 'red' },
-		{ code: '4S', rank: 'four', suit: 'spades', color: 'black' },
-		{ code: '4D', rank: 'four', suit: 'diamonds', color: 'red' },
-		{ code: '4C', rank: 'four', suit: 'clubs', color: 'black' },
-		{ code: '4H', rank: 'four', suit: 'hearts', color: 'red' },
-		{ code: '5S', rank: 'five', suit: 'spades', color: 'black' },
-		{ code: '5D', rank: 'five', suit: 'diamonds', color: 'red' },
-		{ code: '5C', rank: 'five', suit: 'clubs', color: 'black' },
-		{ code: '5H', rank: 'five', suit: 'hearts', color: 'red' },
-		{ code: '6S', rank: 'six', suit: 'spades', color: 'black' },
-		{ code: '6D', rank: 'six', suit: 'diamonds', color: 'red' },
-		{ code: '6C', rank: 'six', suit: 'clubs', color: 'black' },
-		{ code: '6H', rank: 'six', suit: 'hearts', color: 'red' },
-		{ code: '7S', rank: 'seven', suit: 'spades', color: 'black' },
-		{ code: '7D', rank: 'seven', suit: 'diamonds', color: 'red' },
-		{ code: '7C', rank: 'seven', suit: 'clubs', color: 'black' },
-		{ code: '7H', rank: 'seven', suit: 'hearts', color: 'red' },
-		{ code: '8S', rank: 'eight', suit: 'spades', color: 'black' },
-		{ code: '8D', rank: 'eight', suit: 'diamonds', color: 'red' },
-		{ code: '8C', rank: 'eight', suit: 'clubs', color: 'black' },
-		{ code: '8H', rank: 'eight', suit: 'hearts', color: 'red' },
-		{ code: '9S', rank: 'nine', suit: 'spades', color: 'black' },
-		{ code: '9D', rank: 'nine', suit: 'diamonds', color: 'red' },
-		{ code: '9C', rank: 'nine', suit: 'clubs', color: 'black' },
-		{ code: '9H', rank: 'nine', suit: 'hearts', color: 'red' },
-		{ code: '0S', rank: 'ten', suit: 'spades', color: 'black' },
-		{ code: '0D', rank: 'ten', suit: 'diamonds', color: 'red' },
-		{ code: '0C', rank: 'ten', suit: 'clubs', color: 'black' },
-		{ code: '0H', rank: 'ten', suit: 'hearts', color: 'red' },
-		{ code: 'JS', rank: 'jack', suit: 'spades', color: 'black' },
-		{ code: 'JD', rank: 'jack', suit: 'diamonds', color: 'red' },
-		{ code: 'JC', rank: 'jack', suit: 'clubs', color: 'black' },
-		{ code: 'JH', rank: 'jack', suit: 'hearts', color: 'red' },
-		{ code: 'QS', rank: 'queen', suit: 'spades', color: 'black' },
-		{ code: 'QD', rank: 'queen', suit: 'diamonds', color: 'red' },
-		{ code: 'QC', rank: 'queen', suit: 'clubs', color: 'black' },
-		{ code: 'QH', rank: 'queen', suit: 'hearts', color: 'red' },
-		{ code: 'KS', rank: 'king', suit: 'spades', color: 'black' },
-		{ code: 'KD', rank: 'king', suit: 'diamonds', color: 'red' },
-		{ code: 'KC', rank: 'king', suit: 'clubs', color: 'black' },
-		{ code: 'KH', rank: 'king', suit: 'hearts', color: 'red' },
+		{ expectedCode: 'AS', expectedRank: 'ace', expectedSuit: 'spades', expectedColor: 'black' },
+		{ expectedCode: 'AD', expectedRank: 'ace', expectedSuit: 'diamonds', expectedColor: 'red' },
+		{ expectedCode: 'AC', expectedRank: 'ace', expectedSuit: 'clubs', expectedColor: 'black' },
+		{ expectedCode: 'AH', expectedRank: 'ace', expectedSuit: 'hearts', expectedColor: 'red' },
+		{ expectedCode: '2S', expectedRank: 'two', expectedSuit: 'spades', expectedColor: 'black' },
+		{ expectedCode: '2D', expectedRank: 'two', expectedSuit: 'diamonds', expectedColor: 'red' },
+		{ expectedCode: '2C', expectedRank: 'two', expectedSuit: 'clubs', expectedColor: 'black' },
+		{ expectedCode: '2H', expectedRank: 'two', expectedSuit: 'hearts', expectedColor: 'red' },
+		{ expectedCode: '3S', expectedRank: 'three', expectedSuit: 'spades', expectedColor: 'black' },
+		{ expectedCode: '3D', expectedRank: 'three', expectedSuit: 'diamonds', expectedColor: 'red' },
+		{ expectedCode: '3C', expectedRank: 'three', expectedSuit: 'clubs', expectedColor: 'black' },
+		{ expectedCode: '3H', expectedRank: 'three', expectedSuit: 'hearts', expectedColor: 'red' },
+		{ expectedCode: '4S', expectedRank: 'four', expectedSuit: 'spades', expectedColor: 'black' },
+		{ expectedCode: '4D', expectedRank: 'four', expectedSuit: 'diamonds', expectedColor: 'red' },
+		{ expectedCode: '4C', expectedRank: 'four', expectedSuit: 'clubs', expectedColor: 'black' },
+		{ expectedCode: '4H', expectedRank: 'four', expectedSuit: 'hearts', expectedColor: 'red' },
+		{ expectedCode: '5S', expectedRank: 'five', expectedSuit: 'spades', expectedColor: 'black' },
+		{ expectedCode: '5D', expectedRank: 'five', expectedSuit: 'diamonds', expectedColor: 'red' },
+		{ expectedCode: '5C', expectedRank: 'five', expectedSuit: 'clubs', expectedColor: 'black' },
+		{ expectedCode: '5H', expectedRank: 'five', expectedSuit: 'hearts', expectedColor: 'red' },
+		{ expectedCode: '6S', expectedRank: 'six', expectedSuit: 'spades', expectedColor: 'black' },
+		{ expectedCode: '6D', expectedRank: 'six', expectedSuit: 'diamonds', expectedColor: 'red' },
+		{ expectedCode: '6C', expectedRank: 'six', expectedSuit: 'clubs', expectedColor: 'black' },
+		{ expectedCode: '6H', expectedRank: 'six', expectedSuit: 'hearts', expectedColor: 'red' },
+		{ expectedCode: '7S', expectedRank: 'seven', expectedSuit: 'spades', expectedColor: 'black' },
+		{ expectedCode: '7D', expectedRank: 'seven', expectedSuit: 'diamonds', expectedColor: 'red' },
+		{ expectedCode: '7C', expectedRank: 'seven', expectedSuit: 'clubs', expectedColor: 'black' },
+		{ expectedCode: '7H', expectedRank: 'seven', expectedSuit: 'hearts', expectedColor: 'red' },
+		{ expectedCode: '8S', expectedRank: 'eight', expectedSuit: 'spades', expectedColor: 'black' },
+		{ expectedCode: '8D', expectedRank: 'eight', expectedSuit: 'diamonds', expectedColor: 'red' },
+		{ expectedCode: '8C', expectedRank: 'eight', expectedSuit: 'clubs', expectedColor: 'black' },
+		{ expectedCode: '8H', expectedRank: 'eight', expectedSuit: 'hearts', expectedColor: 'red' },
+		{ expectedCode: '9S', expectedRank: 'nine', expectedSuit: 'spades', expectedColor: 'black' },
+		{ expectedCode: '9D', expectedRank: 'nine', expectedSuit: 'diamonds', expectedColor: 'red' },
+		{ expectedCode: '9C', expectedRank: 'nine', expectedSuit: 'clubs', expectedColor: 'black' },
+		{ expectedCode: '9H', expectedRank: 'nine', expectedSuit: 'hearts', expectedColor: 'red' },
+		{ expectedCode: '0S', expectedRank: 'ten', expectedSuit: 'spades', expectedColor: 'black' },
+		{ expectedCode: '0D', expectedRank: 'ten', expectedSuit: 'diamonds', expectedColor: 'red' },
+		{ expectedCode: '0C', expectedRank: 'ten', expectedSuit: 'clubs', expectedColor: 'black' },
+		{ expectedCode: '0H', expectedRank: 'ten', expectedSuit: 'hearts', expectedColor: 'red' },
+		{ expectedCode: 'JS', expectedRank: 'jack', expectedSuit: 'spades', expectedColor: 'black' },
+		{ expectedCode: 'JD', expectedRank: 'jack', expectedSuit: 'diamonds', expectedColor: 'red' },
+		{ expectedCode: 'JC', expectedRank: 'jack', expectedSuit: 'clubs', expectedColor: 'black' },
+		{ expectedCode: 'JH', expectedRank: 'jack', expectedSuit: 'hearts', expectedColor: 'red' },
+		{ expectedCode: 'QS', expectedRank: 'queen', expectedSuit: 'spades', expectedColor: 'black' },
+		{ expectedCode: 'QD', expectedRank: 'queen', expectedSuit: 'diamonds', expectedColor: 'red' },
+		{ expectedCode: 'QC', expectedRank: 'queen', expectedSuit: 'clubs', expectedColor: 'black' },
+		{ expectedCode: 'QH', expectedRank: 'queen', expectedSuit: 'hearts', expectedColor: 'red' },
+		{ expectedCode: 'KS', expectedRank: 'king', expectedSuit: 'spades', expectedColor: 'black' },
+		{ expectedCode: 'KD', expectedRank: 'king', expectedSuit: 'diamonds', expectedColor: 'red' },
+		{ expectedCode: 'KC', expectedRank: 'king', expectedSuit: 'clubs', expectedColor: 'black' },
+		{ expectedCode: 'KH', expectedRank: 'king', expectedSuit: 'hearts', expectedColor: 'red' },
 	] as const;
 
 	it('should return the correct computed properties', () => {
-		for (const [index, card] of allCards.entries()) {
-			const { code, rank, suit, color } = cardProperties[index];
+		for (const [index, { code, rankName, suitName, color }] of allCards.entries()) {
+			const { expectedCode, expectedRank, expectedSuit, expectedColor } = cardProperties[index];
 
-			expect(card.cardCode).toBe(code);
-			expect(card.rankName).toBe(rank);
-			expect(card.suitName).toBe(suit);
-			expect(card.cardColor).toBe(color);
+			expect(code).toBe(expectedCode);
+			expect(rankName).toBe(expectedRank);
+			expect(suitName).toBe(expectedSuit);
+			expect(color).toBe(expectedColor);
 		}
-	});
-
-	it('should throw when state is invalid', () => {
-		// @ts-expect-error set invalid state for the card object
-		const card = new Card('foo', 'bar');
-
-		expect(() => card.rankName).toThrow('Invalid card state');
-		expect(() => card.suitName).toThrow('Invalid card state');
-		expect(() => card.cardColor).toThrow('Invalid card state');
 	});
 });
