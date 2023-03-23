@@ -3,58 +3,58 @@ import { RankCode, SuitCode } from '../types/cards.js';
 import { Card, cardGenerator, randomCard } from './playing-cards.js';
 
 const allCards = [
-	new Card(RankCode.Ace, SuitCode.Spades),
-	new Card(RankCode.Ace, SuitCode.Diamonds),
-	new Card(RankCode.Ace, SuitCode.Clubs),
-	new Card(RankCode.Ace, SuitCode.Hearts),
-	new Card(RankCode.Two, SuitCode.Spades),
-	new Card(RankCode.Two, SuitCode.Diamonds),
-	new Card(RankCode.Two, SuitCode.Clubs),
-	new Card(RankCode.Two, SuitCode.Hearts),
-	new Card(RankCode.Three, SuitCode.Spades),
-	new Card(RankCode.Three, SuitCode.Diamonds),
-	new Card(RankCode.Three, SuitCode.Clubs),
-	new Card(RankCode.Three, SuitCode.Hearts),
-	new Card(RankCode.Four, SuitCode.Spades),
-	new Card(RankCode.Four, SuitCode.Diamonds),
-	new Card(RankCode.Four, SuitCode.Clubs),
-	new Card(RankCode.Four, SuitCode.Hearts),
-	new Card(RankCode.Five, SuitCode.Spades),
-	new Card(RankCode.Five, SuitCode.Diamonds),
-	new Card(RankCode.Five, SuitCode.Clubs),
-	new Card(RankCode.Five, SuitCode.Hearts),
-	new Card(RankCode.Six, SuitCode.Spades),
-	new Card(RankCode.Six, SuitCode.Diamonds),
-	new Card(RankCode.Six, SuitCode.Clubs),
-	new Card(RankCode.Six, SuitCode.Hearts),
-	new Card(RankCode.Seven, SuitCode.Spades),
-	new Card(RankCode.Seven, SuitCode.Diamonds),
-	new Card(RankCode.Seven, SuitCode.Clubs),
-	new Card(RankCode.Seven, SuitCode.Hearts),
-	new Card(RankCode.Eight, SuitCode.Spades),
-	new Card(RankCode.Eight, SuitCode.Diamonds),
-	new Card(RankCode.Eight, SuitCode.Clubs),
-	new Card(RankCode.Eight, SuitCode.Hearts),
-	new Card(RankCode.Nine, SuitCode.Spades),
-	new Card(RankCode.Nine, SuitCode.Diamonds),
-	new Card(RankCode.Nine, SuitCode.Clubs),
-	new Card(RankCode.Nine, SuitCode.Hearts),
-	new Card(RankCode.Ten, SuitCode.Spades),
-	new Card(RankCode.Ten, SuitCode.Diamonds),
-	new Card(RankCode.Ten, SuitCode.Clubs),
-	new Card(RankCode.Ten, SuitCode.Hearts),
-	new Card(RankCode.Jack, SuitCode.Spades),
-	new Card(RankCode.Jack, SuitCode.Diamonds),
-	new Card(RankCode.Jack, SuitCode.Clubs),
-	new Card(RankCode.Jack, SuitCode.Hearts),
-	new Card(RankCode.Queen, SuitCode.Spades),
-	new Card(RankCode.Queen, SuitCode.Diamonds),
-	new Card(RankCode.Queen, SuitCode.Clubs),
-	new Card(RankCode.Queen, SuitCode.Hearts),
-	new Card(RankCode.King, SuitCode.Spades),
-	new Card(RankCode.King, SuitCode.Diamonds),
-	new Card(RankCode.King, SuitCode.Clubs),
-	new Card(RankCode.King, SuitCode.Hearts),
+	{ card: new Card(RankCode.Ace, SuitCode.Spades), code: 'AS', rank: 'ace', suit: 'spades', color: 'black' },
+	{ card: new Card(RankCode.Ace, SuitCode.Diamonds), code: 'AD', rank: 'ace', suit: 'diamonds', color: 'red' },
+	{ card: new Card(RankCode.Ace, SuitCode.Clubs), code: 'AC', rank: 'ace', suit: 'clubs', color: 'black' },
+	{ card: new Card(RankCode.Ace, SuitCode.Hearts), code: 'AH', rank: 'ace', suit: 'hearts', color: 'red' },
+	{ card: new Card(RankCode.Two, SuitCode.Spades), code: '2S', rank: 'two', suit: 'spades', color: 'black' },
+	{ card: new Card(RankCode.Two, SuitCode.Diamonds), code: '2D', rank: 'two', suit: 'diamonds', color: 'red' },
+	{ card: new Card(RankCode.Two, SuitCode.Clubs), code: '2C', rank: 'two', suit: 'clubs', color: 'black' },
+	{ card: new Card(RankCode.Two, SuitCode.Hearts), code: '2H', rank: 'two', suit: 'hearts', color: 'red' },
+	{ card: new Card(RankCode.Three, SuitCode.Spades), code: '3S', rank: 'three', suit: 'spades', color: 'black' },
+	{ card: new Card(RankCode.Three, SuitCode.Diamonds), code: '3D', rank: 'three', suit: 'diamonds', color: 'red' },
+	{ card: new Card(RankCode.Three, SuitCode.Clubs), code: '3C', rank: 'three', suit: 'clubs', color: 'black' },
+	{ card: new Card(RankCode.Three, SuitCode.Hearts), code: '3H', rank: 'three', suit: 'hearts', color: 'red' },
+	{ card: new Card(RankCode.Four, SuitCode.Spades), code: '4S', rank: 'four', suit: 'spades', color: 'black' },
+	{ card: new Card(RankCode.Four, SuitCode.Diamonds), code: '4D', rank: 'four', suit: 'diamonds', color: 'red' },
+	{ card: new Card(RankCode.Four, SuitCode.Clubs), code: '4C', rank: 'four', suit: 'clubs', color: 'black' },
+	{ card: new Card(RankCode.Four, SuitCode.Hearts), code: '4H', rank: 'four', suit: 'hearts', color: 'red' },
+	{ card: new Card(RankCode.Five, SuitCode.Spades), code: '5S', rank: 'five', suit: 'spades', color: 'black' },
+	{ card: new Card(RankCode.Five, SuitCode.Diamonds), code: '5D', rank: 'five', suit: 'diamonds', color: 'red' },
+	{ card: new Card(RankCode.Five, SuitCode.Clubs), code: '5C', rank: 'five', suit: 'clubs', color: 'black' },
+	{ card: new Card(RankCode.Five, SuitCode.Hearts), code: '5H', rank: 'five', suit: 'hearts', color: 'red' },
+	{ card: new Card(RankCode.Six, SuitCode.Spades), code: '6S', rank: 'six', suit: 'spades', color: 'black' },
+	{ card: new Card(RankCode.Six, SuitCode.Diamonds), code: '6D', rank: 'six', suit: 'diamonds', color: 'red' },
+	{ card: new Card(RankCode.Six, SuitCode.Clubs), code: '6C', rank: 'six', suit: 'clubs', color: 'black' },
+	{ card: new Card(RankCode.Six, SuitCode.Hearts), code: '6H', rank: 'six', suit: 'hearts', color: 'red' },
+	{ card: new Card(RankCode.Seven, SuitCode.Spades), code: '7S', rank: 'seven', suit: 'spades', color: 'black' },
+	{ card: new Card(RankCode.Seven, SuitCode.Diamonds), code: '7D', rank: 'seven', suit: 'diamonds', color: 'red' },
+	{ card: new Card(RankCode.Seven, SuitCode.Clubs), code: '7C', rank: 'seven', suit: 'clubs', color: 'black' },
+	{ card: new Card(RankCode.Seven, SuitCode.Hearts), code: '7H', rank: 'seven', suit: 'hearts', color: 'red' },
+	{ card: new Card(RankCode.Eight, SuitCode.Spades), code: '8S', rank: 'eight', suit: 'spades', color: 'black' },
+	{ card: new Card(RankCode.Eight, SuitCode.Diamonds), code: '8D', rank: 'eight', suit: 'diamonds', color: 'red' },
+	{ card: new Card(RankCode.Eight, SuitCode.Clubs), code: '8C', rank: 'eight', suit: 'clubs', color: 'black' },
+	{ card: new Card(RankCode.Eight, SuitCode.Hearts), code: '8H', rank: 'eight', suit: 'hearts', color: 'red' },
+	{ card: new Card(RankCode.Nine, SuitCode.Spades), code: '9S', rank: 'nine', suit: 'spades', color: 'black' },
+	{ card: new Card(RankCode.Nine, SuitCode.Diamonds), code: '9D', rank: 'nine', suit: 'diamonds', color: 'red' },
+	{ card: new Card(RankCode.Nine, SuitCode.Clubs), code: '9C', rank: 'nine', suit: 'clubs', color: 'black' },
+	{ card: new Card(RankCode.Nine, SuitCode.Hearts), code: '9H', rank: 'nine', suit: 'hearts', color: 'red' },
+	{ card: new Card(RankCode.Ten, SuitCode.Spades), code: '0S', rank: 'ten', suit: 'spades', color: 'black' },
+	{ card: new Card(RankCode.Ten, SuitCode.Diamonds), code: '0D', rank: 'ten', suit: 'diamonds', color: 'red' },
+	{ card: new Card(RankCode.Ten, SuitCode.Clubs), code: '0C', rank: 'ten', suit: 'clubs', color: 'black' },
+	{ card: new Card(RankCode.Ten, SuitCode.Hearts), code: '0H', rank: 'ten', suit: 'hearts', color: 'red' },
+	{ card: new Card(RankCode.Jack, SuitCode.Spades), code: 'JS', rank: 'jack', suit: 'spades', color: 'black' },
+	{ card: new Card(RankCode.Jack, SuitCode.Diamonds), code: 'JD', rank: 'jack', suit: 'diamonds', color: 'red' },
+	{ card: new Card(RankCode.Jack, SuitCode.Clubs), code: 'JC', rank: 'jack', suit: 'clubs', color: 'black' },
+	{ card: new Card(RankCode.Jack, SuitCode.Hearts), code: 'JH', rank: 'jack', suit: 'hearts', color: 'red' },
+	{ card: new Card(RankCode.Queen, SuitCode.Spades), code: 'QS', rank: 'queen', suit: 'spades', color: 'black' },
+	{ card: new Card(RankCode.Queen, SuitCode.Diamonds), code: 'QD', rank: 'queen', suit: 'diamonds', color: 'red' },
+	{ card: new Card(RankCode.Queen, SuitCode.Clubs), code: 'QC', rank: 'queen', suit: 'clubs', color: 'black' },
+	{ card: new Card(RankCode.Queen, SuitCode.Hearts), code: 'QH', rank: 'queen', suit: 'hearts', color: 'red' },
+	{ card: new Card(RankCode.King, SuitCode.Spades), code: 'KS', rank: 'king', suit: 'spades', color: 'black' },
+	{ card: new Card(RankCode.King, SuitCode.Diamonds), code: 'KD', rank: 'king', suit: 'diamonds', color: 'red' },
+	{ card: new Card(RankCode.King, SuitCode.Clubs), code: 'KC', rank: 'king', suit: 'clubs', color: 'black' },
+	{ card: new Card(RankCode.King, SuitCode.Hearts), code: 'KH', rank: 'king', suit: 'hearts', color: 'red' },
 ] as const;
 
 describe('randomCard()', () => {
@@ -77,70 +77,20 @@ describe('cardGenerator()', () => {
 	});
 });
 
-describe('Card', () => {
-	const cardProperties = [
-		{ expectedCode: 'AS', expectedRank: 'ace', expectedSuit: 'spades', expectedColor: 'black' },
-		{ expectedCode: 'AD', expectedRank: 'ace', expectedSuit: 'diamonds', expectedColor: 'red' },
-		{ expectedCode: 'AC', expectedRank: 'ace', expectedSuit: 'clubs', expectedColor: 'black' },
-		{ expectedCode: 'AH', expectedRank: 'ace', expectedSuit: 'hearts', expectedColor: 'red' },
-		{ expectedCode: '2S', expectedRank: 'two', expectedSuit: 'spades', expectedColor: 'black' },
-		{ expectedCode: '2D', expectedRank: 'two', expectedSuit: 'diamonds', expectedColor: 'red' },
-		{ expectedCode: '2C', expectedRank: 'two', expectedSuit: 'clubs', expectedColor: 'black' },
-		{ expectedCode: '2H', expectedRank: 'two', expectedSuit: 'hearts', expectedColor: 'red' },
-		{ expectedCode: '3S', expectedRank: 'three', expectedSuit: 'spades', expectedColor: 'black' },
-		{ expectedCode: '3D', expectedRank: 'three', expectedSuit: 'diamonds', expectedColor: 'red' },
-		{ expectedCode: '3C', expectedRank: 'three', expectedSuit: 'clubs', expectedColor: 'black' },
-		{ expectedCode: '3H', expectedRank: 'three', expectedSuit: 'hearts', expectedColor: 'red' },
-		{ expectedCode: '4S', expectedRank: 'four', expectedSuit: 'spades', expectedColor: 'black' },
-		{ expectedCode: '4D', expectedRank: 'four', expectedSuit: 'diamonds', expectedColor: 'red' },
-		{ expectedCode: '4C', expectedRank: 'four', expectedSuit: 'clubs', expectedColor: 'black' },
-		{ expectedCode: '4H', expectedRank: 'four', expectedSuit: 'hearts', expectedColor: 'red' },
-		{ expectedCode: '5S', expectedRank: 'five', expectedSuit: 'spades', expectedColor: 'black' },
-		{ expectedCode: '5D', expectedRank: 'five', expectedSuit: 'diamonds', expectedColor: 'red' },
-		{ expectedCode: '5C', expectedRank: 'five', expectedSuit: 'clubs', expectedColor: 'black' },
-		{ expectedCode: '5H', expectedRank: 'five', expectedSuit: 'hearts', expectedColor: 'red' },
-		{ expectedCode: '6S', expectedRank: 'six', expectedSuit: 'spades', expectedColor: 'black' },
-		{ expectedCode: '6D', expectedRank: 'six', expectedSuit: 'diamonds', expectedColor: 'red' },
-		{ expectedCode: '6C', expectedRank: 'six', expectedSuit: 'clubs', expectedColor: 'black' },
-		{ expectedCode: '6H', expectedRank: 'six', expectedSuit: 'hearts', expectedColor: 'red' },
-		{ expectedCode: '7S', expectedRank: 'seven', expectedSuit: 'spades', expectedColor: 'black' },
-		{ expectedCode: '7D', expectedRank: 'seven', expectedSuit: 'diamonds', expectedColor: 'red' },
-		{ expectedCode: '7C', expectedRank: 'seven', expectedSuit: 'clubs', expectedColor: 'black' },
-		{ expectedCode: '7H', expectedRank: 'seven', expectedSuit: 'hearts', expectedColor: 'red' },
-		{ expectedCode: '8S', expectedRank: 'eight', expectedSuit: 'spades', expectedColor: 'black' },
-		{ expectedCode: '8D', expectedRank: 'eight', expectedSuit: 'diamonds', expectedColor: 'red' },
-		{ expectedCode: '8C', expectedRank: 'eight', expectedSuit: 'clubs', expectedColor: 'black' },
-		{ expectedCode: '8H', expectedRank: 'eight', expectedSuit: 'hearts', expectedColor: 'red' },
-		{ expectedCode: '9S', expectedRank: 'nine', expectedSuit: 'spades', expectedColor: 'black' },
-		{ expectedCode: '9D', expectedRank: 'nine', expectedSuit: 'diamonds', expectedColor: 'red' },
-		{ expectedCode: '9C', expectedRank: 'nine', expectedSuit: 'clubs', expectedColor: 'black' },
-		{ expectedCode: '9H', expectedRank: 'nine', expectedSuit: 'hearts', expectedColor: 'red' },
-		{ expectedCode: '0S', expectedRank: 'ten', expectedSuit: 'spades', expectedColor: 'black' },
-		{ expectedCode: '0D', expectedRank: 'ten', expectedSuit: 'diamonds', expectedColor: 'red' },
-		{ expectedCode: '0C', expectedRank: 'ten', expectedSuit: 'clubs', expectedColor: 'black' },
-		{ expectedCode: '0H', expectedRank: 'ten', expectedSuit: 'hearts', expectedColor: 'red' },
-		{ expectedCode: 'JS', expectedRank: 'jack', expectedSuit: 'spades', expectedColor: 'black' },
-		{ expectedCode: 'JD', expectedRank: 'jack', expectedSuit: 'diamonds', expectedColor: 'red' },
-		{ expectedCode: 'JC', expectedRank: 'jack', expectedSuit: 'clubs', expectedColor: 'black' },
-		{ expectedCode: 'JH', expectedRank: 'jack', expectedSuit: 'hearts', expectedColor: 'red' },
-		{ expectedCode: 'QS', expectedRank: 'queen', expectedSuit: 'spades', expectedColor: 'black' },
-		{ expectedCode: 'QD', expectedRank: 'queen', expectedSuit: 'diamonds', expectedColor: 'red' },
-		{ expectedCode: 'QC', expectedRank: 'queen', expectedSuit: 'clubs', expectedColor: 'black' },
-		{ expectedCode: 'QH', expectedRank: 'queen', expectedSuit: 'hearts', expectedColor: 'red' },
-		{ expectedCode: 'KS', expectedRank: 'king', expectedSuit: 'spades', expectedColor: 'black' },
-		{ expectedCode: 'KD', expectedRank: 'king', expectedSuit: 'diamonds', expectedColor: 'red' },
-		{ expectedCode: 'KC', expectedRank: 'king', expectedSuit: 'clubs', expectedColor: 'black' },
-		{ expectedCode: 'KH', expectedRank: 'king', expectedSuit: 'hearts', expectedColor: 'red' },
-	] as const;
+describe.each(allCards)('Card: $card', ({ card, code, rank, suit, color }) => {
+	it(`should have code ${code}`, () => {
+		expect(card.code).toBe(code);
+	});
 
-	it('should return the correct computed properties', () => {
-		for (const [index, { code, rankName, suitName, color }] of allCards.entries()) {
-			const { expectedCode, expectedRank, expectedSuit, expectedColor } = cardProperties[index];
+	it(`should have rankName ${rank}`, () => {
+		expect(card.rankName).toBe(rank);
+	});
 
-			expect(code).toBe(expectedCode);
-			expect(rankName).toBe(expectedRank);
-			expect(suitName).toBe(expectedSuit);
-			expect(color).toBe(expectedColor);
-		}
+	it(`should have suitname ${suit}`, () => {
+		expect(card.suitName).toBe(suit);
+	});
+
+	it(`should have color ${color}`, () => {
+		expect(card.color).toBe(color);
 	});
 });
