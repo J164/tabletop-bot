@@ -15,14 +15,13 @@
   "dependencies": {
     "discord.js": "14.8.0",
     "pino": "8.11.0",
-    "sharp": "0.31.3"
+    "sharp": "0.32.0"
   },
   "devDependencies": {
-    "@types/node": "18.15.3",
-    "@types/sharp": "0.31.1",
-    "@vitest/coverage-c8": "0.29.3",
+    "@types/node": "18.15.9",
+    "@vitest/coverage-c8": "0.29.7",
     "typescript": "5.0.2",
-    "vitest": "0.29.3",
+    "vitest": "0.29.7",
     "xo": "0.53.1"
   },
   "optionalDependencies": {
