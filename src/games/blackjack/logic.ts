@@ -1,6 +1,4 @@
 import { RankCode } from '../../types/cards.js';
-import { type BlackjackStats } from '../../types/stats.js';
-import { type Bank } from '../../util/bank.js';
 
 export const enum BlackjackResult {
 	PlayerBlackjack = 'Player Blackjack',
@@ -107,45 +105,4 @@ export function decideWinner(playerScore: number, dealerScore: number, immediate
 	}
 
 	return BlackjackResult.Push;
-}
-
-export function resolveBet(result: BlackjackResult, pool: number, bank: Bank, stats: BlackjackStats): void {
-	switch (result) {
-		case BlackjackResult.PlayerBlackjack: {
-			payoutPlayer(pool * 2.5, bank, stats);
-			stats.blackjacks++;
-			stats.wins++;
-			break;
-		}
-
-		case BlackjackResult.Win: {
-			payoutPlayer(pool * 2, bank, stats);
-			stats.wins++;
-			break;
-		}
-
-		case BlackjackResult.Push: {
-			payoutPlayer(pool, bank, stats);
-			stats.pushes++;
-			break;
-		}
-
-		default: {
-			stats.losses++;
-		}
-	}
-}
-
-export function payoutPlayer(amount: number, bank: Bank, stats: BlackjackStats): void {
-	stats.netMoneyEarned += amount;
-	bank.addTokens(amount);
-}
-
-export function chargePlayer(amount: number, bank: Bank, stats: BlackjackStats): boolean {
-	if (bank.chargeTokens(amount)) {
-		stats.netMoneyEarned -= amount;
-		return true;
-	}
-
-	return false;
 }

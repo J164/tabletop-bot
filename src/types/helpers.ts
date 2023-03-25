@@ -1,3 +1,5 @@
+import { type BaseMessageOptions } from 'discord.js';
+
 /** Enum of embed format types */
 export const enum EmbedType {
 	Info,
@@ -26,3 +28,5 @@ export const enum BotColors {
 	SuccessGreen = 0x00_ff_00,
 	QuestionOrange = 0xff_a5_00,
 }
+
+export type SelectAmountOptions = { baseMessage: BaseMessageOptions; minimum: number; maximum: number };
