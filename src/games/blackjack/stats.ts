@@ -1,12 +1,34 @@
-import { type BlackjackStats } from '../../types/stats.js';
+import { fetchStats } from '../../util/stats.js';
 
-const stats: Record<string, BlackjackStats | undefined> = {};
+export function fetchBlackjackStats(userId: string): BlackjackStats {
+	const stats = fetchStats(userId);
 
-export async function fetchStats(userId: string): Promise<BlackjackStats> {
-	// TODO: implement
-	return { earnings: 0 };
+	return stats.blackjack ?? (stats.blackjack = new BlackjackStats());
 }
 
-export async function updateStats(userId: string): Promise<void> {
-	// TODO: implement
+export class BlackjackStats {
+	private _earnings: number;
+	private _tokens: number;
+
+	public constructor() {
+		this._earnings = 0;
+		this._tokens = 100;
+	}
+
+	public get tokens(): number {
+		return this._tokens;
+	}
+
+	public updateEarnings(amount: number): void {
+		this._earnings += amount;
+	}
+
+	public chargeTokens(amount: number): boolean {
+		if (this._tokens > amount) {
+			this._tokens -= amount;
+			return true;
+		}
+
+		return false;
+	}
 }

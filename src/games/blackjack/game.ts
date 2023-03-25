@@ -1,24 +1,30 @@
 import { ButtonStyle, ComponentType, type DMChannel } from 'discord.js';
 import { RankCode } from '../../types/cards.js';
 import { EmbedType } from '../../types/helpers.js';
-import { type BlackjackStats } from '../../types/stats.js';
 import { cardGenerator, type Card } from '../../util/playing-cards.js';
 import { responseEmbed, responseOptions, selectAmount } from '../../util/response-formatters.js';
+import { updateStats } from '../../util/stats.js';
 import { decideWinner, resolveBet, scoreHand } from './logic.js';
 import { printFinalStandings, printStandings } from './responses.js';
-import { fetchStats, updateStats } from './stats.js';
+import { type BlackjackStats, fetchBlackjackStats } from './stats.js';
 
 export type Player = { hand: Card[]; pool: number };
 
 export async function startBlackjack(channel: DMChannel): Promise<void> {
-	const stats = await fetchStats(channel.recipientId);
+	const stats = fetchBlackjackStats(channel.recipientId);
 
 	const nextCard = cardGenerator();
 
 	const dealer = [nextCard(), nextCard()];
 	const playerHand = [nextCard(), nextCard()];
 
-	const player = { hand: playerHand, pool: await initialBets(channel, stats, dealer[0].rank === RankCode.Ace ? { player: playerHand, dealer } : undefined) };
+	const pool = await initialBets(channel, stats, dealer[0].rank === RankCode.Ace ? { player: playerHand, dealer } : undefined);
+
+	if (!pool) {
+		return;
+	}
+
+	const player = { hand: playerHand, pool };
 
 	if (scoreHand(player.hand) === 21 || scoreHand(dealer) === 21) {
 		await endGame(channel, stats, [player], dealer, true);
@@ -34,7 +40,7 @@ export async function startBlackjack(channel: DMChannel): Promise<void> {
 	await endGame(channel, stats, hands, dealer, false);
 }
 
-async function initialBets(channel: DMChannel, stats: BlackjackStats, insurance: { player: Card[]; dealer: Card[] } | undefined): Promise<number> {
+async function initialBets(channel: DMChannel, stats: BlackjackStats, insurance: { player: Card[]; dealer: Card[] } | undefined): Promise<number | undefined> {
 	await channel.send(responseOptions(EmbedType.Info, 'Make your initial bet'));
 	const bet = await selectAmount(channel, {
 		message: { embeds: [responseEmbed(EmbedType.Info, `Make your bet (minimum: 5, maximum: ${stats.tokens})`)] },
@@ -42,7 +48,10 @@ async function initialBets(channel: DMChannel, stats: BlackjackStats, insurance:
 		maximum: stats.tokens,
 	});
 
-	stats.tokens -= bet;
+	if (!stats.chargeTokens(bet)) {
+		await channel.send(responseOptions(EmbedType.Info, 'Cannot afford this bet!'));
+		return;
+	}
 
 	if (insurance) {
 		const { embeds, files } = await printStandings(insurance.player, insurance.dealer[0]);
@@ -55,12 +64,12 @@ async function initialBets(channel: DMChannel, stats: BlackjackStats, insurance:
 			maximum: Math.min(Math.floor(bet / 2), stats.tokens),
 		});
 
-		stats.tokens -= insuranceBet;
-
-		if (scoreHand(insurance.dealer) === 21) {
+		if (!stats.chargeTokens(insuranceBet)) {
+			await channel.send(responseOptions(EmbedType.Info, 'Cannot afford this bet!'));
+		} else if (scoreHand(insurance.dealer) === 21) {
 			await channel.send(responseOptions(EmbedType.Info, 'You lost your insurance bet'));
 		} else {
-			stats.earnings += insuranceBet * 2;
+			stats.updateEarnings(insuranceBet * 2);
 			await channel.send(responseOptions(EmbedType.Info, `You won your insurance bet (Recieved: ${insuranceBet * 2})`));
 		}
 	}
@@ -127,11 +136,10 @@ async function promptPlayer(channel: DMChannel, stats: BlackjackStats, nextCard:
 }
 
 async function endGame(channel: DMChannel, stats: BlackjackStats, players: Player[], dealer: Card[], immediate: boolean): Promise<void> {
-	const previousEarnings = stats.earnings;
 	const playerResults = players.map(({ hand, pool }) => {
 		const result = decideWinner(scoreHand(hand), scoreHand(dealer), immediate);
 
-		resolveBet(result, pool, stats);
+		stats.updateEarnings(resolveBet(result, pool));
 
 		return {
 			hand,
@@ -139,7 +147,7 @@ async function endGame(channel: DMChannel, stats: BlackjackStats, players: Playe
 		};
 	});
 
-	await updateStats(channel.recipientId);
+	updateStats(channel.recipientId);
 
 	const message = await channel.send({
 		...(await printFinalStandings(playerResults, dealer)),
@@ -169,8 +177,5 @@ async function endGame(channel: DMChannel, stats: BlackjackStats, players: Playe
 
 	if (component.customId === 'continue') {
 		await startBlackjack(channel);
-		return;
 	}
-
-	await channel.send(responseOptions(EmbedType.Info, `You netted $${stats.earnings - previousEarnings}`));
 }

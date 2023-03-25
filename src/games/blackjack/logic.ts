@@ -1,5 +1,5 @@
 import { RankCode } from '../../types/cards.js';
-import { BlackjackStats } from '../../types/stats.js';
+import { BlackjackStats } from './stats.js';
 
 export const enum BlackjackResult {
 	PlayerBlackjack = 'Player Blackjack',
@@ -108,6 +108,6 @@ export function decideWinner(playerScore: number, dealerScore: number, immediate
 	return BlackjackResult.Push;
 }
 
-export function resolveBet(result: BlackjackResult, pool: number, stats: BlackjackStats): void {
-	// TODO: implement
+export function resolveBet(result: BlackjackResult, pool: number): number {
+	return 10;
 }
