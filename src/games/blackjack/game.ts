@@ -3,8 +3,8 @@ import { RankCode } from '../../types/cards.js';
 import { EmbedType } from '../../types/helpers.js';
 import { type BlackjackStats } from '../../types/stats.js';
 import { cardGenerator, type Card } from '../../util/playing-cards.js';
-import { responseEmbed, responseOptions } from '../../util/response-formatters.js';
-import { BlackjackResult, decideWinner, resolveBet, scoreHand } from './logic.js';
+import { responseEmbed, responseOptions, selectAmount } from '../../util/response-formatters.js';
+import { decideWinner, resolveBet, scoreHand } from './logic.js';
 import { printFinalStandings, printStandings } from './responses.js';
 import { fetchStats, updateStats } from './stats.js';
 
@@ -16,10 +16,9 @@ export async function startBlackjack(channel: DMChannel): Promise<void> {
 	const nextCard = cardGenerator();
 
 	const dealer = [nextCard(), nextCard()];
+	const playerHand = [nextCard(), nextCard()];
 
-	const player = { hand: [nextCard(), nextCard()], pool: await initialBets(channel, dealer[0].rank === RankCode.Ace) };
-
-	// Have prompt player return an array of pools and player hands
+	const player = { hand: playerHand, pool: await initialBets(channel, stats, dealer[0].rank === RankCode.Ace ? { player: playerHand, dealer } : undefined) };
 
 	if (scoreHand(player.hand) === 21 || scoreHand(dealer) === 21) {
 		await endGame(channel, stats, [player], dealer, true);
@@ -35,18 +34,38 @@ export async function startBlackjack(channel: DMChannel): Promise<void> {
 	await endGame(channel, stats, hands, dealer, false);
 }
 
-async function initialBets(channel: DMChannel, stats: BlackjackStats, insurance: boolean): Promise<number> {
-	const message = await channel.send({
-		embeds: [responseEmbed(EmbedType.Info, 'Place your bet')],
-		components: [
-			{
-				type: ComponentType.ActionRow,
-				
-			}
-		]
-	})
-	// TODO: implement
-	return 0;
+async function initialBets(channel: DMChannel, stats: BlackjackStats, insurance: { player: Card[]; dealer: Card[] } | undefined): Promise<number> {
+	await channel.send(responseOptions(EmbedType.Info, 'Make your initial bet'));
+	const bet = await selectAmount(channel, {
+		message: { embeds: [responseEmbed(EmbedType.Info, `Make your bet (minimum: 5, maximum: ${stats.tokens})`)] },
+		minimum: 5,
+		maximum: stats.tokens,
+	});
+
+	stats.tokens -= bet;
+
+	if (insurance) {
+		const { embeds, files } = await printStandings(insurance.player, insurance.dealer[0]);
+		const insuranceBet = await selectAmount(channel, {
+			message: {
+				embeds: [...embeds, responseEmbed(EmbedType.Info, `Make an insurance bet (minimum: 0, maximum: ${Math.floor(bet / 2)}`)],
+				files,
+			},
+			minimum: 0,
+			maximum: Math.min(Math.floor(bet / 2), stats.tokens),
+		});
+
+		stats.tokens -= insuranceBet;
+
+		if (scoreHand(insurance.dealer) === 21) {
+			await channel.send(responseOptions(EmbedType.Info, 'You lost your insurance bet'));
+		} else {
+			stats.earnings += insuranceBet * 2;
+			await channel.send(responseOptions(EmbedType.Info, `You won your insurance bet (Recieved: ${insuranceBet * 2})`));
+		}
+	}
+
+	return bet;
 }
 
 async function promptPlayer(channel: DMChannel, stats: BlackjackStats, nextCard: () => Card, player: Player, dealer: Card[]): Promise<Player[]> {
@@ -56,24 +75,9 @@ async function promptPlayer(channel: DMChannel, stats: BlackjackStats, nextCard:
 			{
 				type: ComponentType.ActionRow,
 				components: [
-					{
-						type: ComponentType.Button,
-						custom_id: 'hit',
-						style: ButtonStyle.Primary,
-						label: 'Hit',
-					},
-					{
-						type: ComponentType.Button,
-						custom_id: 'stand',
-						style: ButtonStyle.Secondary,
-						label: 'Stand',
-					},
-					{
-						type: ComponentType.Button,
-						custom_id: 'double',
-						style: ButtonStyle.Danger,
-						label: 'Double Down',
-					},
+					{ type: ComponentType.Button, custom_id: 'hit', style: ButtonStyle.Primary, label: 'Hit' },
+					{ type: ComponentType.Button, custom_id: 'stand', style: ButtonStyle.Secondary, label: 'Stand' },
+					{ type: ComponentType.Button, custom_id: 'double', style: ButtonStyle.Danger, label: 'Double Down' },
 				],
 			},
 		],
@@ -143,18 +147,8 @@ async function endGame(channel: DMChannel, stats: BlackjackStats, players: Playe
 			{
 				type: ComponentType.ActionRow,
 				components: [
-					{
-						type: ComponentType.Button,
-						custom_id: 'continue',
-						label: 'Play Again?',
-						style: ButtonStyle.Primary,
-					},
-					{
-						type: ComponentType.Button,
-						custom_id: 'end',
-						label: 'Cash Out',
-						style: ButtonStyle.Secondary,
-					},
+					{ type: ComponentType.Button, custom_id: 'continue', label: 'Play Again?', style: ButtonStyle.Primary },
+					{ type: ComponentType.Button, custom_id: 'end', label: 'Cash Out', style: ButtonStyle.Secondary },
 				],
 			},
 		],
