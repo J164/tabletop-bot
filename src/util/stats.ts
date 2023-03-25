@@ -2,6 +2,8 @@ import { pino } from 'pino';
 import { type BlackjackStats } from '../types/stats.js';
 import { Bank } from './bank.js';
 
+// TODO: implement
+
 type Stats = {
 	bank: Bank;
 	blackjack?: BlackjackStats;

@@ -1,5 +1,6 @@
 import { RankCode } from '../../types/cards.js';
 
+/** Results of a game of blackjack */
 export const enum BlackjackResult {
 	PlayerBlackjack = 'Player Blackjack',
 	DealerBlackjack = 'Dealer Blackjack',
@@ -9,6 +10,11 @@ export const enum BlackjackResult {
 	Push = 'Push',
 }
 
+/**
+ * Scores a hand based on the rules of blackjack
+ * @param hand The hand to score
+ * @returns The score
+ */
 export function scoreHand(hand: Array<{ rank: RankCode }>): number {
 	let numAces = 0;
 	let score = 0;
@@ -79,8 +85,15 @@ export function scoreHand(hand: Array<{ rank: RankCode }>): number {
 	return score;
 }
 
-export function decideWinner(playerScore: number, dealerScore: number, immediate: boolean): BlackjackResult {
-	if (immediate) {
+/**
+ * Determines the result of the game of blackjack
+ * @param playerScore The score of the player's hand
+ * @param dealerScore The score of the dealer's hand
+ * @param blackjack Whether one or both of the players has a blackjack
+ * @returns A BlackjackResult
+ */
+export function determineResults(playerScore: number, dealerScore: number, blackjack: boolean): BlackjackResult {
+	if (blackjack) {
 		if (playerScore !== 21) {
 			return BlackjackResult.DealerBlackjack;
 		}

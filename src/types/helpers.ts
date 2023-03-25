@@ -29,4 +29,5 @@ export const enum BotColors {
 	QuestionOrange = 0xff_a5_00,
 }
 
+/** Options to customize the selector prompt */
 export type SelectAmountOptions = { baseMessage: BaseMessageOptions; minimum: number; maximum: number };

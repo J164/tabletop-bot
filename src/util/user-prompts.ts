@@ -1,7 +1,15 @@
 import { type DMChannel, type MessageComponentInteraction, type BaseMessageOptions, ComponentType, ButtonStyle } from 'discord.js';
 import { type SelectAmountOptions } from '../types/helpers.js';
 
-export async function selectAmount(channel: DMChannel, options: SelectAmountOptions, amount = 0, next?: MessageComponentInteraction): Promise<number> {
+/**
+ * Prompts the user to select a number
+ * @param channel The DM channel to prompt in
+ * @param options Options to customize the selector prompt
+ * @param amount The starting amount
+ * @param _next The component interaction to update
+ * @returns The selected amount
+ */
+export async function selectAmount(channel: DMChannel, options: SelectAmountOptions, amount = 0, _next?: MessageComponentInteraction): Promise<number> {
 	const { baseMessage, minimum, maximum } = options;
 
 	const messageOptions: BaseMessageOptions = {
@@ -31,7 +39,7 @@ export async function selectAmount(channel: DMChannel, options: SelectAmountOpti
 		],
 	};
 
-	const message = await (next?.update(messageOptions) ?? channel.send(messageOptions));
+	const message = await (_next?.update(messageOptions) ?? channel.send(messageOptions));
 
 	let component;
 	try {

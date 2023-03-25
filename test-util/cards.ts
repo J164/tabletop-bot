@@ -1,23 +1,7 @@
 import { RankCode, SuitCode } from '../src/types/cards.js';
 import { Card } from '../src/util/playing-cards.js';
 
-export const ALL_RANKS = [
-	RankCode.Ace,
-	RankCode.Two,
-	RankCode.Three,
-	RankCode.Four,
-	RankCode.Five,
-	RankCode.Six,
-	RankCode.Seven,
-	RankCode.Eight,
-	RankCode.Nine,
-	RankCode.Ten,
-	RankCode.Jack,
-	RankCode.Queen,
-	RankCode.King,
-] as const;
-export const ALL_SUITS = [SuitCode.Spades, SuitCode.Clubs, SuitCode.Hearts, SuitCode.Diamonds] as const;
-
+/** All of the playing cards and their expected computed values */
 export const ALL_PLAYING_CARDS = [
 	{ card: new Card(RankCode.Ace, SuitCode.Spades), code: 'AS', rank: 'ace', suit: 'spades', color: 'black' },
 	{ card: new Card(RankCode.Ace, SuitCode.Diamonds), code: 'AD', rank: 'ace', suit: 'diamonds', color: 'red' },

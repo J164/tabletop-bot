@@ -1,3 +1,4 @@
+/** A user's blackjack stats */
 export type BlackjackStats = {
 	netMoneyEarned: number;
 	wins: number;

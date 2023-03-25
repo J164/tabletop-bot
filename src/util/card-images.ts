@@ -36,7 +36,7 @@ export function getCardImage(code: CardImageCode): Buffer {
  * Merges a number of card images into one image
  * @param cardCodes Array of card codes
  * @param cardsPerRow Number of cards to fit in each row
- * @returns A Promise that resolves to the merged image as a png buffer
+ * @returns The merged image as a png buffer
  */
 export async function mergeImages(cardCodes: CardImageCode[], cardsPerRow?: number): Promise<Buffer> {
 	const width = cardsPerRow ?? cardCodes.length;

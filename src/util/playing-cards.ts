@@ -1,7 +1,8 @@
 import { randomInt } from 'node:crypto';
 import { type CardCode, RankCode, SuitCode, type CardColor } from '../types/cards.js';
 
-const RANKS = [
+/** An array of all the valid card ranks */
+export const ALL_RANKS = [
 	RankCode.Ace,
 	RankCode.Two,
 	RankCode.Three,
@@ -16,15 +17,26 @@ const RANKS = [
 	RankCode.Queen,
 	RankCode.King,
 ] as const;
-const SUITS = [SuitCode.Spades, SuitCode.Clubs, SuitCode.Hearts, SuitCode.Diamonds] as const;
 
+/** An array of all the valid card suits */
+export const ALL_SUITS = [SuitCode.Spades, SuitCode.Clubs, SuitCode.Hearts, SuitCode.Diamonds] as const;
+
+/**
+ * Generates a random card
+ * @param options Options to customize which cards can be generated
+ * @returns A random card
+ */
 export function randomCard(options?: { ranks?: RankCode[]; suits?: SuitCode[] }): Card {
-	const ranks = options?.ranks ?? RANKS;
-	const suits = options?.suits ?? SUITS;
+	const ranks = options?.ranks ?? ALL_RANKS;
+	const suits = options?.suits ?? ALL_SUITS;
 
 	return new Card(ranks[randomInt(0, ranks.length)], suits[randomInt(0, suits.length)]);
 }
 
+/**
+ * Creates a deck, shuffles it, and returns a function that returns a random card. The deck is regenerated and reshuffled when exhausted.
+ * @returns A function that returns a random card
+ */
 export function cardGenerator(): () => Card {
 	let deck = new Deck().shuffle();
 
@@ -37,6 +49,7 @@ export function cardGenerator(): () => Card {
 	};
 }
 
+/** A playing card */
 export class Card {
 	public constructor(public readonly rank: RankCode, public readonly suit: SuitCode) {}
 
@@ -135,13 +148,13 @@ export class Card {
 	}
 }
 
-/** Represents a deck of playing cards */
+/** A deck of playing cards */
 export class Deck {
 	private readonly _cards: Card[] = [];
 
 	public constructor() {
-		for (const rank of RANKS) {
-			for (const suit of SUITS) {
+		for (const rank of ALL_RANKS) {
+			for (const suit of ALL_SUITS) {
 				this._cards.push(new Card(rank, suit));
 			}
 		}

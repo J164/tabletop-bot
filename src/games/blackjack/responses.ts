@@ -7,6 +7,12 @@ import { type BlackjackResult, scoreHand } from './logic.js';
 
 type PlayerResult = { hand: Card[]; result: BlackjackResult };
 
+/**
+ * Formats the player and dealer's hand into a standings message for before the dealer's full hand is revealed
+ * @param playerHand The player's hand
+ * @param dealerCard The dealer's faceup card
+ * @returns The embeds and image files
+ */
 export async function printStandings(playerHand: Card[], dealerCard: Card): Promise<{ embeds: APIEmbed[]; files: AttachmentPayload[] }> {
 	return {
 		embeds: [
@@ -36,6 +42,12 @@ export async function printStandings(playerHand: Card[], dealerCard: Card): Prom
 	};
 }
 
+/**
+ * Formats the player and dealer's hand into a standings message for after the dealer's full hand is revealed
+ * @param playerHand The player's hand
+ * @param dealerCard The dealer's hand
+ * @returns The embeds and image files
+ */
 export async function printFinalStandings(players: PlayerResult[], dealerHand: Card[]): Promise<{ embeds: APIEmbed[]; files: AttachmentPayload[] }> {
 	const dealerScore = scoreHand(dealerHand);
 

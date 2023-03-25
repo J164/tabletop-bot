@@ -1,36 +1,22 @@
 import { type AutocompleteInteraction, type CacheType, type ChatInputCommandInteraction, type InteractionResponse } from 'discord.js';
 import { type Logger } from 'pino';
 
-/** Responds to a Chat Input Command with global scope */
-type GlobalChatInputCommandResponder = (response: GlobalChatInputCommandResponse, logger: Logger) => Promise<void>;
-
-/** Responds to an Autocomplete Interaction with global scope */
-type GlobalChatInputAutocompleteResponder = (interaction: GlobalAutocompleteInteraction, logger: Logger) => Promise<void>;
-
-/** Responds to a Chat Input command with guild scope */
-type GuildChatInputCommandResponder = (response: GuildChatInputCommandResponse, logger: Logger) => Promise<void>;
-
-/** Responds to an Autocomplete Interaction with guild scope */
-type GuildChatInputAutocompleteResponder = (interaction: GuildAutocompleteInteraction, logger: Logger) => Promise<void>;
-
 /** Interaction info for Chat Input Commands */
 export type ChatInputCommand<T extends CacheType> = Omit<InteractionResponse, 'interaction'> & {
 	interaction: ChatInputCommandInteraction<T>;
 };
 
-/** Shorthand for a ChatInputCommandResponse with global scope */
-type GlobalChatInputCommandResponse = ChatInputCommand<CacheType>;
+type GlobalChatInputCommandResponder = (response: GlobalChatInputCommandResponse, logger: Logger) => Promise<void>;
+type GlobalChatInputAutocompleteResponder = (interaction: GlobalAutocompleteInteraction, logger: Logger) => Promise<void>;
+type GuildChatInputCommandResponder = (response: GuildChatInputCommandResponse, logger: Logger) => Promise<void>;
+type GuildChatInputAutocompleteResponder = (interaction: GuildAutocompleteInteraction, logger: Logger) => Promise<void>;
 
-/** Shorthand for a ChatInputCommandResponse with guild scope */
+type GlobalChatInputCommandResponse = ChatInputCommand<CacheType>;
 type GuildChatInputCommandResponse = ChatInputCommand<'cached'>;
 
-/** Shorthand for a AutocompleteInteraction with global scope */
 type GlobalAutocompleteInteraction = AutocompleteInteraction;
-
-/** Shorthand for a AutocompleteInteraction with guild scope */
 type GuildAutocompleteInteraction = AutocompleteInteraction<'cached'>;
 
-/** Possible command contexts */
 type CommandContext = 'Global' | 'Guild';
 
 /** Defines how the bot handles an Application Command */

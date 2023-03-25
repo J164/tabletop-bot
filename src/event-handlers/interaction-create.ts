@@ -11,6 +11,11 @@ const logger = pino({
 
 const commands = await getApplicationCommands();
 
+/**
+ * The callback to execute when the bot recieves an interaction
+ * @param interaction The recieved interaction
+ * @returns
+ */
 export async function onInteractionCreate(interaction: Interaction): Promise<void> {
 	if (interaction.isChatInputCommand()) {
 		await handleChatInputCommand(interaction);

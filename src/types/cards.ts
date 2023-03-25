@@ -1,4 +1,6 @@
+/** Valid card codes */
 export type CardCode = `${RankCode}${SuitCode}`;
+/** Valid card colors */
 export type CardColor = 'black' | 'red';
 
 /** Enum representing possible playing card ranks */

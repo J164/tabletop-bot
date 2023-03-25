@@ -7,17 +7,22 @@ import { type Card, cardGenerator } from '../../util/playing-cards.js';
 import { responseEmbed, responseOptions } from '../../util/response-formatters.js';
 import { updateStats } from '../../util/stats.js';
 import { selectAmount } from '../../util/user-prompts.js';
-import { BlackjackResult, decideWinner, scoreHand } from './logic.js';
+import { BlackjackResult, determineResults, scoreHand } from './logic.js';
 import { printFinalStandings, printStandings } from './responses.js';
 
-export type Player = { hand: Card[]; pool: number };
+type Player = { hand: Card[]; pool: number };
 
+/** A game of blackjack */
 export class Blackjack {
 	private readonly _nextCard = cardGenerator();
 	private _dealer: Card[] = [];
 
 	public constructor(private readonly _channel: DMChannel, private readonly _bank: Bank, private readonly _stats: BlackjackStats) {}
 
+	/**
+	 * Start the game of blackjack
+	 * @returns
+	 */
 	public async start(): Promise<void> {
 		if (this._bank.tokens < 5) {
 			await this._channel.send(responseOptions(EmbedType.Error, "You don't have enough tokens to play this game!"));
@@ -161,7 +166,7 @@ export class Blackjack {
 
 	private async _endGame(players: Player[], immediate: boolean): Promise<void> {
 		const playerResults = players.map(({ hand, pool }) => {
-			const result = decideWinner(scoreHand(hand), scoreHand(this._dealer), immediate);
+			const result = determineResults(scoreHand(hand), scoreHand(this._dealer), immediate);
 
 			this._resolveBet(result, pool);
 
