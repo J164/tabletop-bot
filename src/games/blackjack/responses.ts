@@ -50,7 +50,7 @@ export async function printFinalStandings(players: PlayerResult[], dealerHand: C
 
 				return responseEmbed(EmbedType.Info, `Player Hand ${index + 1} - ${result}`, {
 					fields: [{ name: 'Value', value: playerScore.toString(), inline: true }],
-					image: { url: `attachment://player${index}.png` },
+					image: { url: `attachment://hand${index}.png` },
 				});
 			}),
 		],

@@ -1,4 +1,4 @@
-import { ButtonStyle, ComponentType, type DMChannel, type APIEmbed, type BaseMessageOptions } from 'discord.js';
+import { ButtonStyle, ComponentType, type DMChannel, type APIEmbed, type BaseMessageOptions, type MessageComponentInteraction } from 'discord.js';
 import { BotColors, EmbedType, Emojis } from '../types/helpers.js';
 
 /**
@@ -56,11 +56,11 @@ export function responseOptions(type: EmbedType, title: string, options?: APIEmb
 	return { embeds: [responseEmbed(type, title, options)] };
 }
 
-type SelectAmountOptions = { message: BaseMessageOptions; minimum: number; maximum: number };
-export async function selectAmount(channel: DMChannel, options: SelectAmountOptions, amount = 0): Promise<number> {
-	const { message: baseMessage, minimum, maximum } = options;
+type SelectAmountOptions = { baseMessage: BaseMessageOptions; minimum: number; maximum: number };
+export async function selectAmount(channel: DMChannel, options: SelectAmountOptions, amount = 0, next?: MessageComponentInteraction): Promise<number> {
+	const { baseMessage, minimum, maximum } = options;
 
-	const message = await channel.send({
+	const messageOptions: BaseMessageOptions = {
 		...baseMessage,
 		components: [
 			{
@@ -68,7 +68,7 @@ export async function selectAmount(channel: DMChannel, options: SelectAmountOpti
 				components: [
 					{
 						type: ComponentType.Button,
-						label: 'Submit',
+						label: `Submit ${amount}`,
 						custom_id: 'submit',
 						style: ButtonStyle.Primary,
 						disabled: amount < minimum || amount > maximum,
@@ -85,7 +85,9 @@ export async function selectAmount(channel: DMChannel, options: SelectAmountOpti
 				],
 			},
 		],
-	});
+	};
+
+	const message = await (next?.update(messageOptions) ?? channel.send(messageOptions));
 
 	let component;
 	try {
@@ -100,19 +102,19 @@ export async function selectAmount(channel: DMChannel, options: SelectAmountOpti
 
 	switch (component.customId) {
 		case 'minus_5': {
-			return selectAmount(channel, options, amount - 5);
+			return selectAmount(channel, options, amount - 5, component);
 		}
 
 		case 'minus_1': {
-			return selectAmount(channel, options, amount - 1);
+			return selectAmount(channel, options, amount - 1, component);
 		}
 
 		case 'plus_1': {
-			return selectAmount(channel, options, amount + 1);
+			return selectAmount(channel, options, amount + 1, component);
 		}
 
 		case 'plus_5': {
-			return selectAmount(channel, options, amount + 5);
+			return selectAmount(channel, options, amount + 5, component);
 		}
 
 		default: {
