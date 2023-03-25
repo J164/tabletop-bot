@@ -1,4 +1,4 @@
-import { startBlackjack } from '../games/blackjack.js';
+import { startBlackjack } from '../games/blackjack/game.js';
 import { type ChatInputCommandHandler } from '../types/client.js';
 import { EmbedType } from '../types/helpers.js';
 import { responseOptions } from '../util/response-formatters.js';
@@ -14,6 +14,8 @@ export const handler: ChatInputCommandHandler = {
 				await startBlackjack(await response.interaction.user.createDM());
 				break;
 			}
+
+			// TODO: https://www.cs.mcgill.ca/~rwest/wikispeedia/wpcd/wp/b/Blackjack.htm
 
 			default: {
 				logger.error(response, 'Unknown subcommand invoked');

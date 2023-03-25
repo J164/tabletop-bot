@@ -51,6 +51,7 @@
     ],
     "rules": {
       "default-case": "off",
+      "max-params": "off",
       "@typescript-eslint/explicit-function-return-type": "error",
       "@typescript-eslint/naming-convention": "off",
       "@typescript-eslint/no-implicit-any-catch": "off",
