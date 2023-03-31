@@ -49,19 +49,15 @@ export async function printStandings(playerHand: Card[], dealerCard: Card): Prom
  * @returns The embeds and image files
  */
 export async function printFinalStandings(players: PlayerResult[], dealerHand: Card[]): Promise<{ embeds: APIEmbed[]; files: AttachmentPayload[] }> {
-	const dealerScore = scoreHand(dealerHand);
-
 	return {
 		embeds: [
 			responseEmbed(EmbedType.Info, 'Dealer', {
-				fields: [{ name: 'Value', value: dealerScore.toString(), inline: true }],
+				fields: [{ name: 'Value', value: scoreHand(dealerHand).toString(), inline: true }],
 				image: { url: 'attachment://dealer.png' },
 			}),
 			...players.map(({ hand, result }, index) => {
-				const playerScore = scoreHand(hand);
-
 				return responseEmbed(EmbedType.Info, `Player Hand ${index + 1} - ${result}`, {
-					fields: [{ name: 'Value', value: playerScore.toString(), inline: true }],
+					fields: [{ name: 'Value', value: scoreHand(hand).toString(), inline: true }],
 					image: { url: `attachment://hand${index}.png` },
 				});
 			}),

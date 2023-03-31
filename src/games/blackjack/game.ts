@@ -6,7 +6,7 @@ import { type Bank } from '../../util/bank.js';
 import { type Card, cardGenerator } from '../../util/playing-cards.js';
 import { responseEmbed, responseOptions } from '../../util/response-formatters.js';
 import { updateStats } from '../../util/stats.js';
-import { selectAmount } from '../../util/user-prompts.js';
+import { promptBet } from '../../util/user-prompts.js';
 import { BlackjackResult, determineResults, scoreHand } from './logic.js';
 import { printFinalStandings, printStandings } from './responses.js';
 
@@ -24,20 +24,10 @@ export class Blackjack {
 	 * @returns
 	 */
 	public async start(): Promise<void> {
-		if (this._bank.tokens < 5) {
-			await this._channel.send(responseOptions(EmbedType.Error, "You don't have enough tokens to play this game!"));
-			return;
-		}
-
 		this._dealer = [this._nextCard(), this._nextCard()];
 		const playerHand = [this._nextCard(), this._nextCard()];
 
-		const pool = await this._initialBets(playerHand);
-		if (!pool) {
-			return;
-		}
-
-		const player = { hand: playerHand, pool };
+		const player = { hand: playerHand, pool: await this._initialBets(playerHand) };
 
 		if (scoreHand(player.hand) === 21 || scoreHand(this._dealer) === 21) {
 			await this._endGame([player], true);
@@ -52,11 +42,10 @@ export class Blackjack {
 		await this._endGame(hands, false);
 	}
 
-	private async _initialBets(playerHand: Card[]): Promise<number | undefined> {
-		const bet = await selectAmount(
+	private async _initialBets(playerHand: Card[]): Promise<number> {
+		const bet = await promptBet(
 			this._channel,
 			{
-				baseMessage: { embeds: [responseEmbed(EmbedType.Info, `Make your initial bet (minimum: 5, maximum: ${this._bank.tokens})`)] },
 				minimum: 5,
 				maximum: this._bank.tokens,
 			},
@@ -65,17 +54,18 @@ export class Blackjack {
 
 		if (!this._chargePlayer(bet)) {
 			await this._channel.send(responseOptions(EmbedType.Info, 'Cannot afford this bet!'));
-			return;
+			return 0;
 		}
 
-		if (this._dealer[0].rank === RankCode.Ace) {
+		if (bet > 0 && this._dealer[0].rank === RankCode.Ace) {
 			const { embeds, files } = await printStandings(playerHand, this._dealer[0]);
-			const insuranceBet = await selectAmount(this._channel, {
-				baseMessage: {
-					embeds: [...embeds, responseEmbed(EmbedType.Info, `Make an insurance bet (minimum: 0, maximum: ${Math.floor(bet / 2)}`)],
-					files,
-				},
-				minimum: 0,
+			await this._channel.send({
+				embeds: [...embeds, responseEmbed(EmbedType.Info, 'Make an insurance bet')],
+				files,
+			});
+
+			const insuranceBet = await promptBet(this._channel, {
+				minimum: 2,
 				maximum: Math.min(Math.floor(bet / 2), this._bank.tokens),
 			});
 
@@ -84,7 +74,7 @@ export class Blackjack {
 			} else if (scoreHand(this._dealer) === 21) {
 				this._payoutPlayer(insuranceBet * 3);
 				await this._channel.send(responseOptions(EmbedType.Info, `You won your insurance bet (Recieved: ${insuranceBet * 3})`));
-			} else {
+			} else if (insuranceBet > 0) {
 				await this._channel.send(responseOptions(EmbedType.Info, 'You lost your insurance bet'));
 			}
 		}

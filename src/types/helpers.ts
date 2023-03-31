@@ -1,5 +1,3 @@
-import { type BaseMessageOptions } from 'discord.js';
-
 /** Enum of embed format types */
 export const enum EmbedType {
 	Info,
@@ -30,4 +28,4 @@ export const enum BotColors {
 }
 
 /** Options to customize the selector prompt */
-export type SelectAmountOptions = { baseMessage: BaseMessageOptions; minimum: number; maximum: number };
+export type SelectAmountOptions = { minimum: number; maximum: number };

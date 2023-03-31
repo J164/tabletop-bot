@@ -1,19 +1,20 @@
 import { type DMChannel, type MessageComponentInteraction, type BaseMessageOptions, ComponentType, ButtonStyle } from 'discord.js';
-import { type SelectAmountOptions } from '../types/helpers.js';
+import { EmbedType, type SelectAmountOptions } from '../types/helpers.js';
+import { responseEmbed } from './response-formatters.js';
 
 /**
- * Prompts the user to select a number
+ * Prompts the user to make a bet
  * @param channel The DM channel to prompt in
- * @param options Options to customize the selector prompt
+ * @param options Options to customize the allowed bets
  * @param amount The starting amount
  * @param _next The component interaction to update
  * @returns The selected amount
  */
-export async function selectAmount(channel: DMChannel, options: SelectAmountOptions, amount = 0, _next?: MessageComponentInteraction): Promise<number> {
-	const { baseMessage, minimum, maximum } = options;
+export async function promptBet(channel: DMChannel, options: SelectAmountOptions, amount = 0, _next?: MessageComponentInteraction): Promise<number> {
+	const { minimum, maximum } = options;
 
 	const messageOptions: BaseMessageOptions = {
-		...baseMessage,
+		embeds: [responseEmbed(EmbedType.Info, `Make your bet (minimum: ${minimum}, maximum: ${maximum})`)],
 		components: [
 			{
 				type: ComponentType.ActionRow,
@@ -24,6 +25,12 @@ export async function selectAmount(channel: DMChannel, options: SelectAmountOpti
 						custom_id: 'submit',
 						style: ButtonStyle.Primary,
 						disabled: amount < minimum || amount > maximum,
+					},
+					{
+						type: ComponentType.Button,
+						label: 'None',
+						custom_id: 'decline',
+						style: ButtonStyle.Secondary,
 					},
 				],
 			},
@@ -53,20 +60,24 @@ export async function selectAmount(channel: DMChannel, options: SelectAmountOpti
 	}
 
 	switch (component.customId) {
+		case 'decline': {
+			return 0;
+		}
+
 		case 'minus_5': {
-			return selectAmount(channel, options, amount - 5, component);
+			return promptBet(channel, options, amount - 5, component);
 		}
 
 		case 'minus_1': {
-			return selectAmount(channel, options, amount - 1, component);
+			return promptBet(channel, options, amount - 1, component);
 		}
 
 		case 'plus_1': {
-			return selectAmount(channel, options, amount + 1, component);
+			return promptBet(channel, options, amount + 1, component);
 		}
 
 		case 'plus_5': {
-			return selectAmount(channel, options, amount + 5, component);
+			return promptBet(channel, options, amount + 5, component);
 		}
 
 		default: {

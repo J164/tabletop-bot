@@ -89,7 +89,7 @@ export function scoreHand(hand: Array<{ rank: RankCode }>): number {
  * Determines the result of the game of blackjack
  * @param playerScore The score of the player's hand
  * @param dealerScore The score of the dealer's hand
- * @param blackjack Whether one or both of the players has a blackjack
+ * @param blackjack Whether the dealer and/or player has a blackjack
  * @returns A BlackjackResult
  */
 export function determineResults(playerScore: number, dealerScore: number, blackjack: boolean): BlackjackResult {
