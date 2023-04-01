@@ -1,6 +1,19 @@
-import { type RawStats, type Stats } from '../types/stats.js';
-import { Bank } from './bank.js';
-import { database } from './database.js';
+import { database } from '../database/database.js';
+import { type BlackjackStats } from '../games/blackjack/game.js';
+import { Bank, type RawBank } from './bank.js';
+
+/** A user's stats */
+export type Stats = {
+	userId: string;
+	bank: Bank;
+	blackjack?: BlackjackStats;
+};
+
+type RawStats = {
+	userId: string;
+	bank: RawBank;
+	blackjack?: BlackjackStats;
+};
 
 const stats: Record<string, Stats | undefined> = {};
 const collection = database.collection<RawStats>('users');

@@ -1,16 +1,22 @@
 import { type ButtonInteraction, ButtonStyle, ComponentType, type DMChannel, type BaseMessageOptions } from 'discord.js';
-import { RankCode } from '../../types/cards.js';
-import { EmbedType } from '../../types/helpers.js';
-import { type BlackjackStats } from '../../types/stats.js';
 import { type Bank } from '../../util/bank.js';
-import { type Card, cardGenerator } from '../../util/playing-cards.js';
-import { responseEmbed, responseOptions } from '../../util/response-formatters.js';
+import { type Card, cardGenerator, RankCode } from '../../util/playing-cards.js';
+import { EmbedType, responseEmbed, responseOptions } from '../../util/response-formatters.js';
 import { updateStats } from '../../util/stats.js';
 import { promptBet } from '../../util/user-prompts.js';
 import { BlackjackResult, determineResults, scoreHand } from './logic.js';
 import { printFinalStandings, printStandings } from './responses.js';
 
 type Player = { hand: Card[]; pool: number };
+
+/** A user's blackjack stats */
+export type BlackjackStats = {
+	netMoneyEarned: number;
+	wins: number;
+	losses: number;
+	pushes: number;
+	blackjacks: number;
+};
 
 /** A game of blackjack */
 export class Blackjack {

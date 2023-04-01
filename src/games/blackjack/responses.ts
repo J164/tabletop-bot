@@ -1,8 +1,7 @@
 import { type APIEmbed, type AttachmentPayload } from 'discord.js';
-import { EmbedType } from '../../types/helpers.js';
 import { mergeImages } from '../../util/card-images.js';
 import { type Card } from '../../util/playing-cards.js';
-import { responseEmbed } from '../../util/response-formatters.js';
+import { EmbedType, responseEmbed } from '../../util/response-formatters.js';
 import { type BlackjackResult, scoreHand } from './logic.js';
 
 type PlayerResult = { hand: Card[]; result: BlackjackResult };

@@ -1,5 +1,4 @@
-import { RankCode, SuitCode } from '../src/types/cards.js';
-import { Card } from '../src/util/playing-cards.js';
+import { Card, RankCode, SuitCode } from '../src/util/playing-cards.js';
 
 /** All of the playing cards and their expected computed values */
 export const ALL_PLAYING_CARDS = [

@@ -1,8 +1,7 @@
-import { type ChatInputCommandHandler } from '../types/client.js';
-import { EmbedType } from '../types/helpers.js';
-import { responseOptions } from '../util/response-formatters.js';
+import { type ChatInputCommandHandler } from '../util/command-parser.js';
+import { EmbedType, responseOptions } from '../util/response-formatters.js';
 
-export const handler: ChatInputCommandHandler = {
+export const handler: ChatInputCommandHandler<true> = {
 	name: 'help',
 	type: 'chatInputCommand',
 	allowedInDm: true,

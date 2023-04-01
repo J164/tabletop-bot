@@ -1,6 +1,6 @@
-// TODO: wait for atlas clusters to update to 6.0 for cluster indexes
-
 import { CreateCollectionOptions } from 'mongodb';
+
+// TODO: wait for atlas clusters to update to 6.0 for cluster indexes
 
 export const USER_SCHEMA = {
 	validator: {

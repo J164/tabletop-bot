@@ -1,7 +1,7 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { Buffer } from 'node:buffer';
 import sharp from 'sharp';
-import { type CardCode } from '../types/cards.js';
+import { type CardCode } from './playing-cards.js';
 
 type CardImageCode = CardCode | 'back' | 'XX' | 'X1' | 'X2';
 

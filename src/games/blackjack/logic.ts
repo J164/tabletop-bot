@@ -1,4 +1,4 @@
-import { RankCode } from '../../types/cards.js';
+import { RankCode } from '../../util/playing-cards.js';
 
 /** Results of a game of blackjack */
 export const enum BlackjackResult {

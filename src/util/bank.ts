@@ -1,5 +1,9 @@
 import { type JSONEncodable } from 'discord.js';
-import { type RawBank } from '../types/stats.js';
+
+/** JSON encoded Bank */
+export type RawBank = {
+	tokens: number;
+};
 
 /** A user's bank */
 export class Bank implements JSONEncodable<RawBank> {

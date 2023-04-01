@@ -1,6 +1,7 @@
 import { type DMChannel, type MessageComponentInteraction, type BaseMessageOptions, ComponentType, ButtonStyle } from 'discord.js';
-import { EmbedType, type SelectAmountOptions } from '../types/helpers.js';
-import { responseEmbed } from './response-formatters.js';
+import { EmbedType, responseEmbed } from './response-formatters.js';
+
+type SelectAmountOptions = { minimum: number; maximum: number };
 
 /**
  * Prompts the user to make a bet

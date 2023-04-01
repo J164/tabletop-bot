@@ -1,10 +1,9 @@
 import { Blackjack } from '../games/blackjack/game.js';
-import { type ChatInputCommandHandler } from '../types/client.js';
-import { EmbedType } from '../types/helpers.js';
-import { responseOptions } from '../util/response-formatters.js';
+import { type ChatInputCommandHandler } from '../util/command-parser.js';
+import { EmbedType, responseOptions } from '../util/response-formatters.js';
 import { fetchStats } from '../util/stats.js';
 
-export const handler: ChatInputCommandHandler = {
+export const handler: ChatInputCommandHandler<true> = {
 	name: 'blackjack',
 	type: 'chatInputCommand',
 	allowedInDm: true,

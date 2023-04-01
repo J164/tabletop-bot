@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { RankCode, SuitCode } from '../../types/cards.js';
-import { ALL_RANKS, Card } from '../../util/playing-cards.js';
+import { ALL_RANKS, Card, RankCode, SuitCode } from '../../util/playing-cards.js';
 import { determineResults, scoreHand } from './logic.js';
 
 describe('scoreHand()', () => {
