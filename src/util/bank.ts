@@ -1,9 +1,12 @@
+import { type JSONEncodable } from 'discord.js';
+import { type RawBank } from '../types/stats.js';
+
 /** A user's bank */
-export class Bank {
+export class Bank implements JSONEncodable<RawBank> {
 	private _tokens: number;
 
-	public constructor() {
-		this._tokens = 100;
+	public constructor(bank?: RawBank) {
+		this._tokens = bank ? bank.tokens : 100;
 	}
 
 	public get tokens(): number {
@@ -30,5 +33,9 @@ export class Bank {
 		}
 
 		return false;
+	}
+
+	public toJSON(): RawBank {
+		return { tokens: this._tokens };
 	}
 }

@@ -166,7 +166,7 @@ export class Blackjack {
 			};
 		});
 
-		updateStats(this._channel.recipientId);
+		await updateStats(this._channel.recipientId);
 
 		const message = await this._channel.send({
 			...(await printFinalStandings(playerResults, this._dealer)),
