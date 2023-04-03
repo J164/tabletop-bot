@@ -216,7 +216,7 @@ export class Blackjack {
 
 	private _payoutPlayer(amount: number): void {
 		this._stats.netMoneyEarned += amount;
-		this._bank.addTokens(amount);
+		this._bank.addMoney(amount);
 	}
 
 	private _resolveBet(result: BlackjackResult, pool: number): void {

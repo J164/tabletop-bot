@@ -16,13 +16,22 @@ export const USER_SCHEMA = {
 				},
 				bank: {
 					bsonType: 'object',
-					required: ['tokens'],
+					required: ['lastCollected', 'tokens', 'cash'],
 					additionalProperties: false,
 					properties: {
+						lastCollected: {
+							bsonType: 'string',
+							description: 'required ISO formatted date',
+						},
 						tokens: {
 							bsonType: 'int',
 							minimum: 0,
 							description: 'required non-negative 32-bit integer',
+						},
+						cash: {
+							bsonType: 'long',
+							minimum: 0,
+							description: 'require non-negative 64-bit integer',
 						},
 					},
 				},
