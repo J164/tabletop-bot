@@ -1,5 +1,5 @@
 import { expect, it, describe } from 'vitest';
-import { ALL_PLAYING_CARDS } from '../../test/cards.js';
+import { ALL_PLAYING_CARDS } from '../../test-util/cards.js';
 import { Card, cardGenerator, randomCard } from './playing-cards.js';
 
 describe('randomCard()', () => {

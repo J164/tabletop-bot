@@ -1,6 +1,5 @@
-import { Long } from 'mongodb';
+import { database } from '../database/database.js';
 import { type BlackjackStats } from '../games/blackjack/game.js';
-import { database } from './database/database.js';
 import { Bank, type RawBank } from './bank.js';
 
 /** A user's stats */
@@ -19,10 +18,6 @@ type RawStats = {
 const stats: Record<string, Stats | undefined> = {};
 const collection = database.collection<RawStats>('users');
 
-function getCachedStats(userId: string): Stats {
-	return (stats[userId] = { userId, bank: new Bank({ lastCollected: new Date().toISOString(), tokens: 100, cash: Long.fromBigInt(0n) }) });
-}
-
 // eslint-disable-next-line @typescript-eslint/ban-types
 function wrapStats(rawStats: RawStats | null): Stats | undefined {
 	if (!rawStats) {
@@ -36,9 +31,9 @@ function wrapStats(rawStats: RawStats | null): Stats | undefined {
 }
 
 export async function fetchStats(userId: string): Promise<Stats> {
-	return stats[userId] ?? wrapStats(await collection.findOne()) ?? getCachedStats(userId);
+	return stats[userId] ?? wrapStats(await collection.findOne()) ?? (stats[userId] = { userId, bank: new Bank() });
 }
 
 export async function updateStats(userId: string): Promise<void> {
-	await collection.updateOne({ userId }, getCachedStats(userId), { upsert: true });
+	await collection.updateOne({ userId }, stats[userId] ?? { userId, bank: new Bank() }, { upsert: true });
 }

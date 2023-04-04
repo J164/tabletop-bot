@@ -1,11 +1,17 @@
 {
   "name": "tabletop-bot",
   "version": "0.1.0",
-  "private": true,
-  "type": "module",
+  "description": "A Discord Bot for playing tabletop games",
+  "author": "J164 <j164e3@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/J164/tabletop-bot",
+  "repository": "github:J164/discord-bots",
+  "bugs": "https://github.com/J164/tabletop-bot/issues",
   "engines": {
     "node": ">=18.14.0"
   },
+  "private": true,
+  "type": "module",
   "dependencies": {
     "discord.js": "14.9.0",
     "mongodb": "5.1.0",
@@ -37,10 +43,6 @@
   },
   "xo": {
     "prettier": true,
-    "ignores": [ "build/", "coverage/", "node_modules/" ],
-    "parserOptions": {
-      "project": "./tsconfig.json"
-    },
     "extends": [
       "eslint:recommended",
       "plugin:@typescript-eslint/recommended",
@@ -49,6 +51,7 @@
     ],
     "rules": {
       "default-case": "off",
+      "max-params": "off",
       "no-return-assign": "off",
       "@typescript-eslint/explicit-function-return-type": "error",
       "@typescript-eslint/naming-convention": "off",
