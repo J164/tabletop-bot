@@ -1,8 +1,6 @@
 import { type JSONEncodable } from 'discord.js';
 import { Long } from 'mongodb';
 
-// TODO: work on which database types to use (Date?)
-
 /** JSON encoded Bank */
 export type RawBank = {
 	lastCollected: string;
@@ -11,6 +9,8 @@ export type RawBank = {
 };
 
 const TWENTY_FOUR_HOURS_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
+/** The number of tokens rewarded per day to a player's bank account */
+export const DAILY_TOKENS = 50;
 
 /** A user's bank */
 export class Bank implements JSONEncodable<RawBank> {
@@ -18,14 +18,12 @@ export class Bank implements JSONEncodable<RawBank> {
 	private _tokens: number;
 	private _cash: bigint;
 
-	public constructor(bank: RawBank) {
+	public constructor(bank: RawBank | Record<string, undefined>) {
 		const { lastCollected, tokens, cash } = bank;
 
-		this._lastCollected = new Date(lastCollected);
-		this._tokens = tokens;
-		this._cash = cash.toBigInt();
-
-		this.checkIdleTokens();
+		this._lastCollected = new Date(lastCollected ?? Date.now());
+		this._tokens = tokens ?? 100;
+		this._cash = cash?.toBigInt() ?? 0n;
 	}
 
 	public get tokens(): number {
@@ -68,7 +66,7 @@ export class Bank implements JSONEncodable<RawBank> {
 		const idleDays = Math.floor(idleTime / TWENTY_FOUR_HOURS_IN_MILLISECONDS);
 
 		this._lastCollected = new Date(now - (idleTime % TWENTY_FOUR_HOURS_IN_MILLISECONDS));
-		this._tokens += idleDays * 50;
+		this._tokens += idleDays * DAILY_TOKENS;
 
 		return idleDays;
 	}

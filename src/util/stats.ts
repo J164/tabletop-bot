@@ -1,39 +1,42 @@
-import { database } from '../database/database.js';
+import { type JSONEncodable } from 'discord.js';
 import { type BlackjackStats } from '../games/blackjack/game.js';
+import { statsCollection } from './database/database.js';
 import { Bank, type RawBank } from './bank.js';
 
-/** A user's stats */
-export type Stats = {
-	userId: string;
-	bank: Bank;
-	blackjack?: BlackjackStats;
-};
-
-type RawStats = {
+export type RawStats = {
 	userId: string;
 	bank: RawBank;
-	blackjack?: BlackjackStats;
+	blackjack: BlackjackStats | undefined;
 };
 
-const stats: Record<string, Stats | undefined> = {};
-const collection = database.collection<RawStats>('users');
+export class Stats implements JSONEncodable<RawStats> {
+	public readonly userId: string;
+	public readonly bank: Bank;
+	public readonly blackjack: BlackjackStats | undefined;
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-function wrapStats(rawStats: RawStats | null): Stats | undefined {
-	if (!rawStats) {
-		return;
+	public constructor(rawStats: Partial<RawStats> & Pick<RawStats, 'userId'>) {
+		const { userId, bank, blackjack } = rawStats;
+
+		this.userId = userId;
+		this.bank = new Bank(bank ?? {});
+		this.blackjack = blackjack;
 	}
 
-	return {
-		...rawStats,
-		bank: new Bank(rawStats.bank),
-	};
+	public toJSON(): RawStats {
+		return { userId: this.userId, bank: this.bank.toJSON(), blackjack: this.blackjack };
+	}
 }
 
+const stats: Record<string, Stats | undefined> = {};
+
 export async function fetchStats(userId: string): Promise<Stats> {
-	return stats[userId] ?? wrapStats(await collection.findOne()) ?? (stats[userId] = { userId, bank: new Bank() });
+	return (stats[userId] ??= new Stats((await statsCollection.findOne()) ?? { userId }));
 }
 
 export async function updateStats(userId: string): Promise<void> {
-	await collection.updateOne({ userId }, stats[userId] ?? { userId, bank: new Bank() }, { upsert: true });
+	const user = stats[userId];
+
+	if (user) {
+		await statsCollection.updateOne({ userId }, user.toJSON(), { upsert: true });
+	}
 }
