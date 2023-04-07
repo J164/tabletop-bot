@@ -3,7 +3,8 @@ import { Buffer } from 'node:buffer';
 import sharp from 'sharp';
 import { type CardCode } from './playing-cards.js';
 
-type CardImageCode = CardCode | 'back' | 'XX' | 'X1' | 'X2';
+/** Code corrosponding to a card image */
+export type CardImageCode = CardCode | 'back' | 'XX' | 'X1' | 'X2';
 
 const CARD_WIDTH = 226;
 const CARD_HEIGHT = 314;

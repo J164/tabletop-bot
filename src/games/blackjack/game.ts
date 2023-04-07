@@ -57,10 +57,9 @@ export class Blackjack {
 
 		if (bet > 0 && this._dealer[0].rank === RankCode.Ace) {
 			const { embeds, files } = await printStandings(playerHand, this._dealer[0]);
-			await this._channel.send({
-				embeds: [...embeds, responseEmbed(EmbedType.Info, 'Make an insurance bet')],
-				files,
-			});
+			embeds.push(responseEmbed(EmbedType.Info, 'Make an insurance bet'));
+
+			await this._channel.send({ embeds, files });
 
 			const insuranceBet = await promptBet(this._channel, {
 				minimum: 2,
