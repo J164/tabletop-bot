@@ -1,4 +1,4 @@
-import { ApplicationCommandDataResolvable } from 'discord.js';
+import { type ApplicationCommandDataResolvable } from 'discord.js';
 
 export const APPLICATION_COMMANDS = [
 	{

@@ -1,29 +1,26 @@
-import { type JSONEncodable } from 'discord.js';
-import { type BlackjackStats } from '../games/blackjack/game.js';
-import { statsCollection } from './database/database.js';
-import { Bank, type RawBank } from './bank.js';
+import { BlackjackStats, type EncodedBlackjackStats } from '../games/blackjack/stats.js';
+import { type MongodbEncodable, statsCollection } from './database/database.js';
+import { Bank, type EncodedBank } from './bank.js';
 
-export type RawStats = {
+export type EncodedStats = {
 	userId: string;
-	bank: RawBank;
-	blackjack: BlackjackStats | undefined;
+	bank: EncodedBank;
+	blackjack: EncodedBlackjackStats | undefined;
 };
 
-export class Stats implements JSONEncodable<RawStats> {
+export class Stats implements MongodbEncodable<EncodedStats> {
 	public readonly userId: string;
 	public readonly bank: Bank;
-	public readonly blackjack: BlackjackStats | undefined;
+	public readonly blackjackStats: BlackjackStats;
 
-	public constructor(rawStats: Partial<RawStats> & Pick<RawStats, 'userId'>) {
-		const { userId, bank, blackjack } = rawStats;
-
+	public constructor({ userId, bank, blackjack }: Partial<EncodedStats> & Pick<EncodedStats, 'userId'>) {
 		this.userId = userId;
 		this.bank = new Bank(bank ?? {});
-		this.blackjack = blackjack;
+		this.blackjackStats = new BlackjackStats(blackjack ?? {});
 	}
 
-	public toJSON(): RawStats {
-		return { userId: this.userId, bank: this.bank.toJSON(), blackjack: this.blackjack };
+	public toEncoded(): EncodedStats {
+		return { userId: this.userId, bank: this.bank.toEncoded(), blackjack: this.blackjackStats.toEncoded() };
 	}
 }
 
@@ -37,6 +34,6 @@ export async function updateStats(userId: string): Promise<void> {
 	const user = stats[userId];
 
 	if (user) {
-		await statsCollection.updateOne({ userId }, user.toJSON(), { upsert: true });
+		await statsCollection.updateOne({ userId }, user.toEncoded(), { upsert: true });
 	}
 }

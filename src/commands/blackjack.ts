@@ -10,17 +10,13 @@ export const handler: ChatInputCommandHandler<true> = {
 	async respond(response, logger) {
 		switch (response.interaction.options.getSubcommand()) {
 			case 'play': {
-				const [channel, playerStats] = await Promise.all([
+				const [channel, { bank, blackjackStats }] = await Promise.all([
 					response.interaction.user.createDM(),
 					fetchStats(response.interaction.user.id),
 					response.interaction.editReply(responseOptions(EmbedType.Info, 'Starting game...')),
 				]);
 
-				const blackjack = new Blackjack(
-					channel,
-					playerStats.bank,
-					playerStats.blackjack ?? { blackjacks: 0, losses: 0, netMoneyEarned: 0, pushes: 0, wins: 0 },
-				);
+				const blackjack = new Blackjack(channel, bank, blackjackStats);
 				await blackjack.start();
 				break;
 			}

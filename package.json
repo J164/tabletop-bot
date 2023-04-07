@@ -17,7 +17,7 @@
     "@vitest/coverage-c8": "0.29.8",
     "typescript": "5.0.3",
     "vitest": "0.29.8",
-    "xo": "0.53.1"
+    "xo": "0.54.0"
   },
   "optionalDependencies": {
     "bufferutil": "4.0.7",
@@ -50,6 +50,7 @@
       "@typescript-eslint/naming-convention": "off",
       "@typescript-eslint/no-implicit-any-catch": "off",
       "@typescript-eslint/switch-exhaustiveness-check": "warn",
+      "import/no-extraneous-dependencies": "off",
       "unicorn/prevent-abbreviations": "off"
     }
   }

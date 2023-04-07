@@ -6,17 +6,9 @@ import { updateStats } from '../../util/stats.js';
 import { promptBet } from '../../util/user-prompts.js';
 import { BlackjackResult, determineResults, scoreHand } from './logic.js';
 import { printFinalStandings, printStandings } from './responses.js';
+import { type BlackjackStats } from './stats.js';
 
 type Player = { hand: Card[]; pool: number };
-
-/** A user's blackjack stats */
-export type BlackjackStats = {
-	netMoneyEarned: number;
-	wins: number;
-	losses: number;
-	pushes: number;
-	blackjacks: number;
-};
 
 /** A game of blackjack */
 export class Blackjack {

@@ -1,4 +1,4 @@
-import { CreateCollectionOptions } from 'mongodb';
+import { type CreateCollectionOptions } from 'mongodb';
 
 // TODO: wait for atlas clusters to update to 6.0 for cluster indexes
 
@@ -20,8 +20,8 @@ export const STATS_SCHEMA = {
 					additionalProperties: false,
 					properties: {
 						lastCollected: {
-							bsonType: 'string',
-							description: 'required ISO formatted date',
+							bsonType: 'long',
+							description: 'required 64-bit integer representing milliseconds from UNIX epoch',
 						},
 						tokens: {
 							bsonType: 'int',
