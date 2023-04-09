@@ -1,7 +1,8 @@
 import { type CreateCollectionOptions } from 'mongodb';
 
-// TODO: wait for atlas clusters to update to 6.0 for cluster indexes
+// TODO: wait for atlas clusters to update to 6.0 for cluster indexes and make new schemas
 
+/** The collection schema for user stats */
 export const STATS_SCHEMA = {
 	validator: {
 		$jsonSchema: {

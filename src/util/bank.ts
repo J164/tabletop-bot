@@ -1,27 +1,71 @@
 import { Int32, Long } from 'mongodb';
-import { type MongodbEncodable } from './database/database.js';
+import { bankCollection } from './database/database.js';
+import { BaseDocument } from './database/base-document.js';
 
-/** JSON encoded Bank */
+/** MongoDB encoded Bank */
 export type EncodedBank = {
+	userId: string;
 	lastCollected: Long;
 	tokens: Int32;
 	cash: Long;
 };
 
+type DecodedBank = {
+	userId: string;
+	lastCollected: number;
+	tokens: number;
+	cash: number;
+};
+
 const TWENTY_FOUR_HOURS_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
 /** The number of tokens rewarded per day to a player's bank account */
-export const DAILY_TOKENS = 50;
+const DAILY_TOKENS = 50;
 
 /** A user's bank */
-export class Bank implements MongodbEncodable<EncodedBank> {
+export class Bank extends BaseDocument {
+	/**
+	 * Get the user's bank from the cache or database. Creates a new bank if none is found
+	 * @param userId The user's Discord id
+	 * @returns The user's bank
+	 */
+	public static async get(userId: string): Promise<Bank> {
+		const bank = await bankCollection.findOne({ userId });
+
+		return new Bank(
+			bank
+				? Bank._decode(bank)
+				: {
+						userId,
+						lastCollected: Date.now(),
+						tokens: 100,
+						cash: 0,
+				  },
+		);
+	}
+
+	private static _decode({ userId, lastCollected, tokens, cash }: EncodedBank): DecodedBank {
+		return {
+			userId,
+			lastCollected: lastCollected.toNumber(),
+			tokens: tokens.toJSON(),
+			cash: cash.toNumber(),
+		};
+	}
+
 	private _lastCollected: number;
 	private _tokens: number;
 	private _cash: number;
 
-	public constructor({ lastCollected, tokens, cash }: EncodedBank | Record<string, undefined>) {
-		this._lastCollected = lastCollected?.toNumber() ?? Date.now();
-		this._tokens = tokens?.toJSON() ?? 100;
-		this._cash = cash?.toNumber() ?? 0;
+	public constructor({ userId, lastCollected, tokens, cash }: DecodedBank) {
+		super(userId);
+
+		this._lastCollected = lastCollected;
+		this._tokens = tokens;
+		this._cash = cash;
+	}
+
+	public get lastCollected(): Date {
+		return new Date(this._lastCollected);
 	}
 
 	public get tokens(): number {
@@ -32,12 +76,9 @@ export class Bank implements MongodbEncodable<EncodedBank> {
 		return this._cash;
 	}
 
-	/**
-	 * Adds an amount of cash to the bank
-	 * @param amount The amount of cash to add
-	 */
-	public addMoney(amount: number): void {
-		this._cash += amount;
+	public set cash(cash: number) {
+		this._cash = cash;
+		this._queueUpdate();
 	}
 
 	/**
@@ -48,6 +89,7 @@ export class Bank implements MongodbEncodable<EncodedBank> {
 	public chargeTokens(amount: number): boolean {
 		if (this._tokens > amount) {
 			this._tokens -= amount;
+			this._queueUpdate();
 			return true;
 		}
 
@@ -67,10 +109,16 @@ export class Bank implements MongodbEncodable<EncodedBank> {
 		const idleTokens = Math.floor(idleTime / TWENTY_FOUR_HOURS_IN_MILLISECONDS) * DAILY_TOKENS;
 		this._tokens += idleTokens;
 
+		this._queueUpdate();
+
 		return idleTokens;
 	}
 
-	public toEncoded(): EncodedBank {
-		return { lastCollected: Long.fromNumber(this._lastCollected), tokens: new Int32(this._tokens), cash: Long.fromNumber(this._cash) };
+	protected async _update(userId: string): Promise<void> {
+		await bankCollection.updateOne(
+			{ userId },
+			{ userId, lastCollected: Long.fromNumber(this._lastCollected), tokens: new Int32(this._tokens), cash: Long.fromNumber(this._cash) },
+			{ upsert: true },
+		);
 	}
 }

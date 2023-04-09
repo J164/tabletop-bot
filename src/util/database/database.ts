@@ -1,18 +1,16 @@
 import { env } from 'node:process';
 import { MongoClient } from 'mongodb';
-import { type BSONValue } from 'bson';
-import { type EncodedStats } from '../stats.js';
-import { STATS_SCHEMA } from './database-schemas.js';
+import { type EncodedBlackjack } from '../../games/blackjack/save.js';
+import { type EncodedBank } from '../bank.js';
 
-type MongoDBObject = { [key: string]: BSONValue | string | undefined | MongoDBObject };
-
-export type MongodbEncodable<T extends MongoDBObject> = {
-	toEncoded(): T;
-};
+// TODO: add collection configs
 
 const databaseClient = new MongoClient(env.MONGO_URL ?? '');
 await databaseClient.connect();
 
 const database = databaseClient.db(env.DATABASE_NAME);
 
-export const statsCollection = await database.createCollection<EncodedStats>('stats', STATS_SCHEMA);
+/** Database collection for Bank documents */
+export const bankCollection = await database.createCollection<EncodedBank>('bank');
+/** Database colletion for Blackjack documents */
+export const blackjackCollection = await database.createCollection<EncodedBlackjack>('blackjack');

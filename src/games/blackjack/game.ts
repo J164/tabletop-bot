@@ -2,11 +2,10 @@ import { type ButtonInteraction, ButtonStyle, ComponentType, type DMChannel, typ
 import { type Bank } from '../../util/bank.js';
 import { type Card, cardGenerator, RankCode } from '../../util/playing-cards.js';
 import { EmbedType, responseEmbed, responseOptions } from '../../util/response-formatters.js';
-import { updateStats } from '../../util/stats.js';
 import { promptBet } from '../../util/user-prompts.js';
 import { BlackjackResult, determineResults, scoreHand } from './logic.js';
 import { printFinalStandings, printStandings } from './responses.js';
-import { type BlackjackStats } from './stats.js';
+import { type BlackjackSave } from './save.js';
 
 type Player = { hand: Card[]; pool: number };
 
@@ -15,7 +14,7 @@ export class Blackjack {
 	private readonly _nextCard = cardGenerator();
 	private _dealer: Card[] = [];
 
-	public constructor(private readonly _channel: DMChannel, private readonly _bank: Bank, private readonly _stats: BlackjackStats) {}
+	public constructor(private readonly _channel: DMChannel, private readonly _bank: Bank, private readonly _save: BlackjackSave) {}
 
 	/**
 	 * Start the game of blackjack
@@ -163,8 +162,6 @@ export class Blackjack {
 			};
 		});
 
-		await updateStats(this._channel.recipientId);
-
 		const message = await this._channel.send({
 			...(await printFinalStandings(playerResults, this._dealer)),
 			components: [
@@ -198,7 +195,7 @@ export class Blackjack {
 
 	private _chargePlayer(amount: number): boolean {
 		if (this._bank.chargeTokens(amount)) {
-			this._stats.netMoneyEarned -= amount;
+			this._save.stats.netMoneyEarned -= amount;
 			return true;
 		}
 
@@ -206,33 +203,33 @@ export class Blackjack {
 	}
 
 	private _payoutPlayer(amount: number): void {
-		this._stats.netMoneyEarned += amount;
-		this._bank.addMoney(amount);
+		this._save.stats.netMoneyEarned += amount;
+		this._bank.cash += amount;
 	}
 
 	private _resolveBet(result: BlackjackResult, pool: number): void {
 		switch (result) {
 			case BlackjackResult.PlayerBlackjack: {
 				this._payoutPlayer(pool * 2.5);
-				this._stats.blackjacks++;
-				this._stats.wins++;
+				this._save.stats.blackjacks++;
+				this._save.stats.wins++;
 				break;
 			}
 
 			case BlackjackResult.Win: {
 				this._payoutPlayer(pool * 2);
-				this._stats.wins++;
+				this._save.stats.wins++;
 				break;
 			}
 
 			case BlackjackResult.Push: {
 				this._payoutPlayer(pool);
-				this._stats.pushes++;
+				this._save.stats.pushes++;
 				break;
 			}
 
 			default: {
-				this._stats.losses++;
+				this._save.stats.losses++;
 			}
 		}
 	}
