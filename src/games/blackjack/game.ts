@@ -195,7 +195,7 @@ export class Blackjack {
 
 	private _chargePlayer(amount: number): boolean {
 		if (this._bank.chargeTokens(amount)) {
-			this._save.stats.netMoneyEarned -= amount;
+			this._save.netMoneyEarned -= amount;
 			return true;
 		}
 
@@ -203,7 +203,7 @@ export class Blackjack {
 	}
 
 	private _payoutPlayer(amount: number): void {
-		this._save.stats.netMoneyEarned += amount;
+		this._save.netMoneyEarned += amount;
 		this._bank.cash += amount;
 	}
 
@@ -211,25 +211,25 @@ export class Blackjack {
 		switch (result) {
 			case BlackjackResult.PlayerBlackjack: {
 				this._payoutPlayer(pool * 2.5);
-				this._save.stats.blackjacks++;
-				this._save.stats.wins++;
+				this._save.blackjacks++;
+				this._save.wins++;
 				break;
 			}
 
 			case BlackjackResult.Win: {
 				this._payoutPlayer(pool * 2);
-				this._save.stats.wins++;
+				this._save.wins++;
 				break;
 			}
 
 			case BlackjackResult.Push: {
 				this._payoutPlayer(pool);
-				this._save.stats.pushes++;
+				this._save.pushes++;
 				break;
 			}
 
 			default: {
-				this._save.stats.losses++;
+				this._save.losses++;
 			}
 		}
 	}

@@ -1,6 +1,6 @@
-import { pino } from 'pino';
+import { globalLogger } from '../util/logger.js';
 
-const logger = pino({
+const logger = globalLogger.child({
 	name: 'ready',
 });
 

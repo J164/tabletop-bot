@@ -31,10 +31,6 @@ export class Bank extends BaseDocument {
 	public static async get(userId: string): Promise<Bank> {
 		const bank = await bankCollection.findOne({ _id: userId });
 
-		// FIXME: Data is already converted to Number
-
-		console.log(bank);
-
 		return new Bank(
 			bank
 				? Bank._decode(bank)

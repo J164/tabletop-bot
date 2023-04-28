@@ -1,3 +1,5 @@
+import { databaseLogger } from './database.js';
+
 export abstract class BaseDocument {
 	private readonly _userId: string;
 	private _saveTimer: NodeJS.Timeout | undefined;
@@ -10,14 +12,13 @@ export abstract class BaseDocument {
 	 * Queues a update for the database entry for this document
 	 */
 	protected _queueUpdate(): void {
-		this._saveTimer?.unref();
+		this._saveTimer ??= setTimeout(async () => {
+			this._saveTimer = undefined;
 
-		this._saveTimer = setTimeout(async () => {
 			try {
-				console.log(this);
 				await this._update(this._userId);
 			} catch (error) {
-				console.error(error);
+				databaseLogger.error(error);
 			}
 		}, 5000);
 	}

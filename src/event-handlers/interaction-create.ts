@@ -1,9 +1,9 @@
 import { type ChatInputCommandInteraction, type Interaction, type AutocompleteInteraction, type CacheType } from 'discord.js';
-import { pino } from 'pino';
 import { type ChatInputCommand, getApplicationCommands } from '../util/command-parser.js';
 import { EmbedType, responseOptions } from '../util/response-formatters.js';
+import { globalLogger } from '../util/logger.js';
 
-const logger = pino({
+const logger = globalLogger.child({
 	name: 'interaction-create',
 });
 
