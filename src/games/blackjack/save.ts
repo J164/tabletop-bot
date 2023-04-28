@@ -1,12 +1,12 @@
-import { Int32 } from 'mongodb';
+import { Int32, Long } from 'mongodb';
 import { blackjackCollection } from '../../util/database/database.js';
 import { BaseDocument } from '../../util/database/base-document.js';
 
 /** MongoDB encoded blackjack stats */
 export type EncodedBlackjack = {
-	userId: string;
+	_id: string;
 	stats: {
-		netMoneyEarned: Int32;
+		netMoneyEarned: Long;
 		wins: Int32;
 		losses: Int32;
 		pushes: Int32;
@@ -30,7 +30,9 @@ type BlackjackStats = {
 /** A user's blackjack stats */
 export class BlackjackSave extends BaseDocument {
 	public static async get(userId: string): Promise<BlackjackSave> {
-		const save = await blackjackCollection.findOne({ userId });
+		const save = await blackjackCollection.findOne({ _id: userId });
+
+		console.log(save);
 
 		return new BlackjackSave(
 			save
@@ -42,11 +44,11 @@ export class BlackjackSave extends BaseDocument {
 		);
 	}
 
-	private static _decode({ userId, stats: { netMoneyEarned, wins, losses, pushes, blackjacks } }: EncodedBlackjack): DecodedBlackjack {
+	private static _decode({ _id, stats: { netMoneyEarned, wins, losses, pushes, blackjacks } }: EncodedBlackjack): DecodedBlackjack {
 		return {
-			userId,
+			userId: _id,
 			stats: {
-				netMoneyEarned: netMoneyEarned.toJSON(),
+				netMoneyEarned: netMoneyEarned.toNumber(),
 				wins: wins.toJSON(),
 				losses: losses.toJSON(),
 				pushes: pushes.toJSON(),
@@ -69,6 +71,7 @@ export class BlackjackSave extends BaseDocument {
 
 	public set stats(stats: BlackjackStats) {
 		this._stats = stats;
+		console.log(stats);
 		this._queueUpdate();
 	}
 
@@ -76,15 +79,17 @@ export class BlackjackSave extends BaseDocument {
 		const { netMoneyEarned, wins, losses, pushes, blackjacks } = this._stats;
 
 		await blackjackCollection.updateOne(
-			{ userId },
+			{ _id: userId },
 			{
-				userId,
-				stats: {
-					netMoneyEarned: new Int32(netMoneyEarned),
-					wins: new Int32(wins),
-					losses: new Int32(losses),
-					pushes: new Int32(pushes),
-					blackjacks: new Int32(blackjacks),
+				$set: {
+					_id: userId,
+					stats: {
+						netMoneyEarned: Long.fromNumber(netMoneyEarned),
+						wins: new Int32(wins),
+						losses: new Int32(losses),
+						pushes: new Int32(pushes),
+						blackjacks: new Int32(blackjacks),
+					},
 				},
 			},
 			{ upsert: true },

@@ -4,7 +4,7 @@ import { BaseDocument } from './database/base-document.js';
 
 /** MongoDB encoded Bank */
 export type EncodedBank = {
-	userId: string;
+	_id: string;
 	lastCollected: Long;
 	tokens: Int32;
 	cash: Long;
@@ -29,7 +29,11 @@ export class Bank extends BaseDocument {
 	 * @returns The user's bank
 	 */
 	public static async get(userId: string): Promise<Bank> {
-		const bank = await bankCollection.findOne({ userId });
+		const bank = await bankCollection.findOne({ _id: userId });
+
+		// FIXME: Data is already converted to Number
+
+		console.log(bank);
 
 		return new Bank(
 			bank
@@ -43,9 +47,9 @@ export class Bank extends BaseDocument {
 		);
 	}
 
-	private static _decode({ userId, lastCollected, tokens, cash }: EncodedBank): DecodedBank {
+	private static _decode({ _id, lastCollected, tokens, cash }: EncodedBank): DecodedBank {
 		return {
-			userId,
+			userId: _id,
 			lastCollected: lastCollected.toNumber(),
 			tokens: tokens.toJSON(),
 			cash: cash.toNumber(),
@@ -116,8 +120,15 @@ export class Bank extends BaseDocument {
 
 	protected async _update(userId: string): Promise<void> {
 		await bankCollection.updateOne(
-			{ userId },
-			{ userId, lastCollected: Long.fromNumber(this._lastCollected), tokens: new Int32(this._tokens), cash: Long.fromNumber(this._cash) },
+			{ _id: userId },
+			{
+				$set: {
+					_id: userId,
+					lastCollected: Long.fromNumber(this._lastCollected),
+					tokens: new Int32(this._tokens),
+					cash: Long.fromNumber(this._cash),
+				},
+			},
 			{ upsert: true },
 		);
 	}

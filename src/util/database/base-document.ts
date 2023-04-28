@@ -14,6 +14,7 @@ export abstract class BaseDocument {
 
 		this._saveTimer = setTimeout(async () => {
 			try {
+				console.log(this);
 				await this._update(this._userId);
 			} catch (error) {
 				console.error(error);
