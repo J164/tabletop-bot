@@ -89,7 +89,6 @@ export const handler: ChatInputCommandHandler<true> = {
 
 			case 'stats': {
 				const user = fetchUser(response.interaction.user.id);
-
 				const blackjackSave = await user.getBlackjackSave();
 
 				await response.interaction.editReply(

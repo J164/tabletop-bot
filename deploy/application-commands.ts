@@ -7,6 +7,14 @@ export const APPLICATION_COMMANDS = [
 		description: 'Displays the help menu',
 	},
 	{
+		name: 'stats',
+		description: 'Displays your stats',
+	},
+	{
+		name: 'daily-reward',
+		description: 'Redeem your daily token reward',
+	},
+	{
 		name: 'blackjack',
 		description: 'A classic casino game played against the house',
 		options: [

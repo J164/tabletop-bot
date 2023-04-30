@@ -17,7 +17,11 @@ type DecodedBank = {
 	cash: number;
 };
 
-const TWENTY_FOUR_HOURS_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
+type IdleCheckResult = { success: true; amount: number } | { success: false; time: string };
+
+const ONE_MINUTE_IN_MILLISECONDS = 60 * 1000;
+const ONE_HOUR_IN_MILLISECONDS = 60 * ONE_MINUTE_IN_MILLISECONDS;
+const TWENTY_FOUR_HOURS_IN_MILLISECONDS = 24 * ONE_HOUR_IN_MILLISECONDS;
 /** The number of tokens rewarded per day to a player's bank account */
 const DAILY_TOKENS = 50;
 
@@ -100,9 +104,16 @@ export class Bank extends BaseDocument {
 	 * Collects daily token rewards
 	 * @returns The number of tokens cashed in
 	 */
-	public checkIdleTokens(): number {
+	public checkIdleTokens(): IdleCheckResult {
 		const now = Date.now();
 		const idleTime = now - this._lastCollected;
+
+		if (idleTime < TWENTY_FOUR_HOURS_IN_MILLISECONDS) {
+			return {
+				success: false,
+				time: `${Math.floor(idleTime / ONE_HOUR_IN_MILLISECONDS)}H ${Math.floor((idleTime % ONE_HOUR_IN_MILLISECONDS) / ONE_MINUTE_IN_MILLISECONDS)}M`,
+			};
+		}
 
 		this._lastCollected = now - (idleTime % TWENTY_FOUR_HOURS_IN_MILLISECONDS);
 
@@ -111,7 +122,10 @@ export class Bank extends BaseDocument {
 
 		this._queueUpdate();
 
-		return idleTokens;
+		return {
+			success: true,
+			amount: idleTokens,
+		};
 	}
 
 	protected async _update(userId: string): Promise<void> {

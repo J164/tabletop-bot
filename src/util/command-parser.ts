@@ -11,10 +11,10 @@ export type ChatInputCommand<T extends CacheType> = Omit<InteractionResponse, 'i
 export type ApplicationCommandHandler = ChatInputCommandHandler<boolean>;
 
 /** Defines how the bot handles a Global Chat Input Command */
-export type ChatInputCommandHandler<T extends boolean> = {
-	readonly respond: (response: ChatInputCommand<T extends true ? CacheType : 'cached'>, logger: Logger) => Promise<void>;
-	readonly autocomplete?: (interaction: AutocompleteInteraction<T extends true ? CacheType : 'cached'>, logger: Logger) => Promise<void>;
-	readonly allowedInDm: T;
+export type ChatInputCommandHandler<AllowedInDm extends boolean> = {
+	readonly respond: (response: ChatInputCommand<AllowedInDm extends true ? CacheType : 'cached'>, logger: Logger) => Promise<void>;
+	readonly autocomplete?: (interaction: AutocompleteInteraction<AllowedInDm extends true ? CacheType : 'cached'>, logger: Logger) => Promise<void>;
+	readonly allowedInDm: AllowedInDm;
 	readonly name: string;
 	readonly ephemeral?: boolean;
 	readonly type: 'chatInputCommand';
