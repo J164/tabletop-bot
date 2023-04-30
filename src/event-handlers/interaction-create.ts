@@ -23,18 +23,6 @@ export async function onInteractionCreate(interaction: Interaction): Promise<voi
 	if (interaction.isAutocomplete()) {
 		await handleChatInputAutocomplete(interaction);
 	}
-
-	/* TODO:
-	if (interaction.isUserContextMenuCommand()) {
-		await handleUserContextMenuCommand(interaction);
-		return;
-	}
-
-	if (interaction.isMessageContextMenuCommand()) {
-		await handleMessageContextMenuCommand(interaction);
-		return;
-	}
-	*/
 }
 
 async function handleChatInputCommand(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -116,9 +104,3 @@ async function handleChatInputAutocomplete(interaction: AutocompleteInteraction)
 		interactionLogger.error(error, 'Chat Input Autocomplete threw an error');
 	}
 }
-
-/* TODO:
-async function handleUserContextMenuCommand(interaction: UserContextMenuCommandInteraction): Promise<void> {}
-
-async function handleMessageContextMenuCommand(interaction: MessageContextMenuCommandInteraction): Promise<void> {}
-*/
