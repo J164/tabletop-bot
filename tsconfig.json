@@ -1,18 +1,12 @@
 {
   "compilerOptions": {
-    // Type Checking
     "exactOptionalPropertyTypes": true,
     "strict": true,
-
-    // Modules
     "module": "NodeNext",
-
-    // Emit
+    "resolveJsonModule": true,
     "outDir": "build",
-    "sourceMap": true,
-
-    // Language and Environment
     "target": "ES2022",
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*", "deploy/**/*"],
+  "exclude": ["**/*.test.ts"]
 }

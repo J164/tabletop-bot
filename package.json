@@ -1,37 +1,38 @@
 {
   "name": "tabletop-bot",
   "version": "0.1.0",
-  "description": "A Discord Bot for playing tabletop games",
-  "author": "J164 <j164e3@gmail.com>",
-  "license": "MIT",
-  "homepage": "https://github.com/J164/tabletop-bot",
-  "repository": "github:J164/discord-bots",
-  "bugs": "https://github.com/J164/tabletop-bot/issues",
+  "private": true,
+  "type": "module",
   "engines": {
     "node": ">=18.14.0"
   },
-  "private": true,
-  "type": "module",
   "dependencies": {
-    "discord.js": "14.7.1",
-    "pino": "8.11.0"
+    "discord.js": "14.11.0",
+    "mongodb": "5.4.0",
+    "pino": "8.12.1",
+    "sharp": "0.32.1"
   },
   "devDependencies": {
-    "@types/node": "18.14.6",
-    "ava": "5.2.0",
-    "typescript": "4.9.5",
-    "xo": "0.53.1"
+    "@types/node": "18.16.5",
+    "@vitest/coverage-c8": "0.31.0",
+    "typescript": "5.0.4",
+    "vitest": "0.31.0",
+    "xo": "0.54.2"
   },
   "optionalDependencies": {
     "bufferutil": "4.0.7",
-    "erlpack": "github:discord/erlpack",
     "utf-8-validate": "6.0.3",
     "zlib-sync": "0.1.8"
   },
   "scripts": {
     "build": "tsc",
     "lint": "xo",
-    "test": "ava"
+    "deploy": "node build/deploy/deploy.js",
+    "test": "vitest run --coverage"
+  },
+  "prettier": {
+    "bracketSpacing": true,
+    "printWidth": 160
   },
   "xo": {
     "prettier": true,
@@ -43,12 +44,13 @@
     ],
     "rules": {
       "default-case": "off",
+      "no-return-assign": "off",
+      "@typescript-eslint/explicit-function-return-type": "error",
       "@typescript-eslint/naming-convention": "off",
-      "@typescript-eslint/no-implicit-any-catch": "off"
+      "@typescript-eslint/no-implicit-any-catch": "off",
+      "@typescript-eslint/switch-exhaustiveness-check": "warn",
+      "import/no-extraneous-dependencies": "off",
+      "unicorn/prevent-abbreviations": "off"
     }
-  },
-  "prettier": {
-    "bracketSpacing": true,
-    "printWidth": 160
   }
 }

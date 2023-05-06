@@ -1,5 +1,33 @@
-import { type APIEmbed, type BaseMessageOptions, type APIActionRowComponent, type APIMessageActionRowComponent } from 'discord.js';
-import { BotColors, EmbedType, Emojis } from '../types/helpers.js';
+import { type APIEmbed, type BaseMessageOptions } from 'discord.js';
+
+/** Enum of embed format types */
+export const enum EmbedType {
+	Info,
+	Error,
+	Success,
+	Prompt,
+	None,
+}
+
+/** Enum of Discord emojis */
+export const enum Emojis {
+	Document = '\uD83D\uDCC4',
+	RedX = '\u274C',
+	GreenCheckMark = '\u2705',
+	QuestionMark = '\u2753',
+	DoubleArrowLeft = '\u23EA',
+	ArrowLeft = '\u2B05\uFE0F',
+	ArrowRight = '\u27A1\uFE0F',
+	DoubleArrowRight = '\u23E9',
+}
+
+/** Enum of Tabletop Bot's colors */
+export const enum BotColors {
+	DefaultBlue = 0x00_99_ff,
+	ErrorRed = 0xff_00_00,
+	SuccessGreen = 0x00_ff_00,
+	QuestionOrange = 0xff_a5_00,
+}
 
 /**
  * Formats an embed based on its type
@@ -9,8 +37,6 @@ import { BotColors, EmbedType, Emojis } from '../types/helpers.js';
  * @returns The formated embed
  */
 export function responseEmbed(type: EmbedType, title: string, options?: Omit<APIEmbed, 'title'>): APIEmbed {
-	options?.fields?.splice(25);
-
 	const embed: APIEmbed = options ?? {};
 
 	switch (type) {
@@ -38,7 +64,7 @@ export function responseEmbed(type: EmbedType, title: string, options?: Omit<API
 			break;
 		}
 
-		case EmbedType.None: {
+		default: {
 			embed.title = title;
 			break;
 		}
@@ -56,18 +82,4 @@ export function responseEmbed(type: EmbedType, title: string, options?: Omit<API
  */
 export function responseOptions(type: EmbedType, title: string, options?: APIEmbed): BaseMessageOptions {
 	return { embeds: [responseEmbed(type, title, options)] };
-}
-
-/**
- * Sanitizes a message to ensure it adheres to the API spec
- * @param options The message to sanitize
- * @returns The sanitized message
- */
-export function messageOptions(
-	options: BaseMessageOptions & { embeds?: APIEmbed[]; components?: Array<APIActionRowComponent<APIMessageActionRowComponent>> },
-): BaseMessageOptions {
-	options.embeds?.splice(10);
-	options.components?.splice(5);
-
-	return options;
 }
