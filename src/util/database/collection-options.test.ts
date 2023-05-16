@@ -1,3 +1,11 @@
-import { describe } from 'vitest';
+import { describe, it } from 'vitest';
 
-describe.todo('Test encoded types to ensure they match schemas?');
+describe('collection options', () => {
+	it.todo('should exist for each collection');
+	it.todo('should explicity disable promotion of values');
+});
+
+describe('collection creation options', () => {
+	it.todo('should be an extention of its respective base options');
+	it.todo('should define a validator');
+});

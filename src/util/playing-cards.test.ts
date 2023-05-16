@@ -39,3 +39,5 @@ describe.each(ALL_PLAYING_CARDS)('Card: $card', ({ card, code, rank, suit, color
 		expect(card.color).toBe(color);
 	});
 });
+
+describe.todo('Deck');
