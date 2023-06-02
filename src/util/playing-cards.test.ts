@@ -1,6 +1,6 @@
 import { expect, it, describe } from 'vitest';
 import { ALL_PLAYING_CARDS } from '../../test/cards.js';
-import { Card, cardGenerator, randomCard } from './playing-cards.js';
+import { Card, Deck, cardGenerator, randomCard } from './playing-cards.js';
 
 describe('randomCard()', () => {
 	it.todo('should return random cards', () => {
@@ -40,4 +40,26 @@ describe.each(ALL_PLAYING_CARDS)('Card: $card', ({ card, code, rank, suit, color
 	});
 });
 
-describe.todo('Deck');
+describe('Deck', () => {
+	it('should return the correct size', () => {
+		const deck = new Deck();
+
+		expect(deck.size).toBe(52);
+
+		for (let i = 0; i < 3; i++) {
+			deck.draw();
+		}
+
+		expect(deck.size).toBe(49);
+	});
+
+	it('should draw cards until deck is empty', () => {
+		const deck = new Deck();
+
+		while (deck.size > 0) {
+			expect(deck.draw()).toBeInstanceOf(Card);
+		}
+
+		expect(deck.draw()).toBeUndefined();
+	});
+});
