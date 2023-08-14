@@ -1,4 +1,4 @@
-name: test
+name: lint
 
 on:
   push:
@@ -7,12 +7,12 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [20.x]
 
     steps:
       - name: Setup repo
@@ -23,7 +23,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - run: npm install --omit=optional
+      - run: npm ci --omit=optional
 
-      - run: npm run build
-      - run: npm run test
+      - run: npm run lint
