@@ -1,5 +1,5 @@
+import { EmbedType, responseEmbed } from '@j164/bot-framework';
 import { type DMChannel, type MessageComponentInteraction, type BaseMessageOptions, ComponentType, ButtonStyle } from 'discord.js';
-import { EmbedType, responseEmbed } from './response-formatters.js';
 
 type SelectAmountOptions = { minimum: number; maximum: number };
 

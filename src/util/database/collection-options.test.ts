@@ -1,11 +1,10 @@
-import { describe, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import * as CollectionOptions from './collection-options.js';
 
-describe('collection options', () => {
-	it.todo('should exist for each collection');
-	it.todo('should explicity disable promotion of values');
-});
-
-describe('collection creation options', () => {
-	it.todo('should be an extention of its respective base options');
-	it.todo('should define a validator');
+describe.each(Object.values(CollectionOptions))('collection creation options', (collection) => {
+	it('should extend its respective collection options', () => {
+		for (const [key, value] of Object.entries(collection.baseOptions)) {
+			expect(collection.createOptions[key]).toEqual(value);
+		}
+	});
 });

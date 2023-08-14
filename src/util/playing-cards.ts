@@ -80,7 +80,10 @@ export function cardGenerator(): () => Card {
 
 /** A playing card */
 export class Card {
-	public constructor(public readonly rank: RankCode, public readonly suit: SuitCode) {}
+	public constructor(
+		public readonly rank: RankCode,
+		public readonly suit: SuitCode,
+	) {}
 
 	public get code(): CardCode {
 		return `${this.rank}${this.suit}`;
@@ -219,6 +222,6 @@ export class Deck {
 	 * @returns The drawn card
 	 */
 	public drawUnsafe(): Card {
-		return this._cards.pop()!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
+		return this._cards.pop()!;
 	}
 }

@@ -1,5 +1,4 @@
-import { type ChatInputCommandHandler } from '../util/command-parser.js';
-import { EmbedType, responseOptions } from '../util/response-formatters.js';
+import { type ChatInputCommandHandler, EmbedType, responseOptions } from '@j164/bot-framework';
 
 export const handler: ChatInputCommandHandler<true> = {
 	name: 'help',

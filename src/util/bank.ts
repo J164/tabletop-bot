@@ -1,6 +1,9 @@
-import { Int32, Long } from 'mongodb';
-import { bankCollection } from './database/database.js';
+import { env } from 'node:process';
+import { type Collection, Int32, Long } from 'mongodb';
+import { fetchCollection } from '@j164/bot-framework';
+import { type Logger } from 'pino';
 import { BaseDocument } from './database/base-document.js';
+import { BANK_COLLECTION } from './database/collection-options.js';
 
 /** MongoDB encoded Bank */
 export type EncodedBank = {
@@ -32,8 +35,9 @@ export class Bank extends BaseDocument {
 	 * @param userId The user's Discord id
 	 * @returns The user's bank
 	 */
-	public static async get(userId: string): Promise<Bank> {
-		const bank = await bankCollection.findOne({ _id: userId });
+	public static async get(userId: string, logger: Logger): Promise<Bank> {
+		const collection = await fetchCollection<EncodedBank>('bank', env.MONGO_URL ?? '', BANK_COLLECTION);
+		const bank = await collection.findOne({ _id: userId });
 
 		return new Bank(
 			bank
@@ -44,6 +48,8 @@ export class Bank extends BaseDocument {
 						tokens: 100,
 						cash: 0,
 				  },
+			collection,
+			logger,
 		);
 	}
 
@@ -60,8 +66,12 @@ export class Bank extends BaseDocument {
 	private _tokens: number;
 	private _cash: number;
 
-	public constructor({ userId, lastCollected, tokens, cash }: DecodedBank) {
-		super(userId);
+	public constructor(
+		{ userId, lastCollected, tokens, cash }: DecodedBank,
+		private readonly _collection: Collection<EncodedBank>,
+		logger: Logger,
+	) {
+		super(userId, logger);
 
 		this._lastCollected = lastCollected;
 		this._tokens = tokens;
@@ -129,7 +139,7 @@ export class Bank extends BaseDocument {
 	}
 
 	protected async _update(userId: string): Promise<void> {
-		await bankCollection.updateOne(
+		await this._collection.updateOne(
 			{ _id: userId },
 			{
 				$set: {

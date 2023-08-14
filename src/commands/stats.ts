@@ -1,13 +1,12 @@
-import { type ChatInputCommandHandler } from '../util/command-parser.js';
-import { EmbedType, responseOptions } from '../util/response-formatters.js';
+import { type ChatInputCommandHandler, EmbedType, responseOptions } from '@j164/bot-framework';
 import { fetchUser } from '../util/user.js';
 
 export const handler: ChatInputCommandHandler<true> = {
 	name: 'stats',
 	type: 'chatInputCommand',
 	allowedInDm: true,
-	async respond(response) {
-		const user = fetchUser(response.interaction.user.id);
+	async respond(response, context) {
+		const user = fetchUser(response.interaction.user.id, context.botClient.globalLogger);
 		const bank = await user.getBank();
 
 		await response.interaction.editReply(

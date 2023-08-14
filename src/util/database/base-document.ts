@@ -1,12 +1,12 @@
-import { databaseLogger } from './database.js';
+import { type Logger } from 'pino';
 
 export abstract class BaseDocument {
-	private readonly _userId: string;
 	private _saveTimer: NodeJS.Timeout | undefined;
 
-	protected constructor(userId: string) {
-		this._userId = userId;
-	}
+	protected constructor(
+		private readonly _userId: string,
+		protected readonly _logger: Logger,
+	) {}
 
 	/**
 	 * Queues a update for the database entry for this document
@@ -18,7 +18,7 @@ export abstract class BaseDocument {
 			try {
 				await this._update(this._userId);
 			} catch (error) {
-				databaseLogger.error(error);
+				this._logger.error(error);
 			}
 		}, 5000);
 	}

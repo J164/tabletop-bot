@@ -1,6 +1,9 @@
-import { Double, Int32 } from 'mongodb';
-import { blackjackCollection } from '../../util/database/database.js';
+import { env } from 'node:process';
+import { type Collection, Double, Int32 } from 'mongodb';
+import { fetchCollection } from '@j164/bot-framework';
+import { type Logger } from 'pino';
 import { BaseDocument } from '../../util/database/base-document.js';
+import { BLACKJACK_COLLECTION } from '../../util/database/collection-options.js';
 
 /** MongoDB encoded blackjack stats */
 export type EncodedBlackjack = {
@@ -23,8 +26,9 @@ type DecodedBlackjack = {
 
 /** A user's blackjack stats */
 export class BlackjackSave extends BaseDocument {
-	public static async get(userId: string): Promise<BlackjackSave> {
-		const save = await blackjackCollection.findOne({ _id: userId });
+	public static async get(userId: string, logger: Logger): Promise<BlackjackSave> {
+		const collection = await fetchCollection<EncodedBlackjack>('blackjack', env.MONGO_URL ?? '', BLACKJACK_COLLECTION);
+		const save = await collection.findOne({ _id: userId });
 
 		return new BlackjackSave(
 			save
@@ -37,6 +41,8 @@ export class BlackjackSave extends BaseDocument {
 						pushes: 0,
 						blackjacks: 0,
 				  },
+			collection,
+			logger,
 		);
 	}
 
@@ -57,8 +63,12 @@ export class BlackjackSave extends BaseDocument {
 	private _pushes: number;
 	private _blackjacks: number;
 
-	private constructor({ userId, netMoneyEarned, wins, losses, pushes, blackjacks }: DecodedBlackjack) {
-		super(userId);
+	private constructor(
+		{ userId, netMoneyEarned, wins, losses, pushes, blackjacks }: DecodedBlackjack,
+		private readonly _collection: Collection<EncodedBlackjack>,
+		logger: Logger,
+	) {
+		super(userId, logger);
 
 		this._netMoneyEarned = netMoneyEarned;
 		this._wins = wins;
@@ -113,7 +123,7 @@ export class BlackjackSave extends BaseDocument {
 	}
 
 	protected async _update(userId: string): Promise<void> {
-		await blackjackCollection.updateOne(
+		await this._collection.updateOne(
 			{ _id: userId },
 			{
 				$set: {

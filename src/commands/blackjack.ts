@@ -1,16 +1,15 @@
+import { type ChatInputCommandHandler, EmbedType, responseOptions } from '@j164/bot-framework';
 import { Blackjack } from '../games/blackjack/game.js';
-import { type ChatInputCommandHandler } from '../util/command-parser.js';
-import { EmbedType, responseOptions } from '../util/response-formatters.js';
 import { fetchUser } from '../util/user.js';
 
 export const handler: ChatInputCommandHandler<true> = {
 	name: 'blackjack',
 	type: 'chatInputCommand',
 	allowedInDm: true,
-	async respond(response, logger) {
+	async respond(response, context) {
 		switch (response.interaction.options.getSubcommand()) {
 			case 'play': {
-				const user = fetchUser(response.interaction.user.id);
+				const user = fetchUser(response.interaction.user.id, context.botClient.globalLogger);
 
 				const [channel, bank, blackjackStats] = await Promise.all([
 					response.interaction.user.createDM(),
@@ -88,7 +87,7 @@ export const handler: ChatInputCommandHandler<true> = {
 			}
 
 			case 'stats': {
-				const user = fetchUser(response.interaction.user.id);
+				const user = fetchUser(response.interaction.user.id, context.botClient.globalLogger);
 				const blackjackSave = await user.getBlackjackSave();
 
 				await response.interaction.editReply(
@@ -107,7 +106,7 @@ export const handler: ChatInputCommandHandler<true> = {
 			}
 
 			default: {
-				logger.error(response, 'Unknown subcommand invoked');
+				context.commandLogger.error(response, 'Unknown subcommand invoked');
 				await response.interaction.editReply(responseOptions(EmbedType.Error, 'Something went wrong!'));
 				break;
 			}

@@ -1,7 +1,7 @@
 import { type ButtonInteraction, ButtonStyle, ComponentType, type DMChannel, type BaseMessageOptions } from 'discord.js';
+import { EmbedType, responseEmbed, responseOptions } from '@j164/bot-framework';
 import { type Bank } from '../../util/bank.js';
 import { type Card, cardGenerator, RankCode } from '../../util/playing-cards.js';
-import { EmbedType, responseEmbed, responseOptions } from '../../util/response-formatters.js';
 import { promptBet } from '../../util/user-prompts.js';
 import { BlackjackResult, determineResults, scoreHand } from './logic.js';
 import { printFinalStandings, printStandings } from './responses.js';
@@ -14,7 +14,11 @@ export class Blackjack {
 	private readonly _nextCard = cardGenerator();
 	private _dealer: Card[] = [];
 
-	public constructor(private readonly _channel: DMChannel, private readonly _bank: Bank, private readonly _save: BlackjackSave) {}
+	public constructor(
+		private readonly _channel: DMChannel,
+		private readonly _bank: Bank,
+		private readonly _save: BlackjackSave,
+	) {}
 
 	/**
 	 * Start the game of blackjack
