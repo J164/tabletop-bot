@@ -5,6 +5,7 @@ import { loadApplicationCommands } from './util/load-commands.js';
 
 await startBot({
 	token: env.TOKEN ?? '',
+	databaseUrl: env.MONGO_URL ?? '',
 	clientOptions: {
 		intents: [GatewayIntentBits.Guilds],
 		partials: [Partials.Channel],

@@ -1,6 +1,5 @@
-import { env } from 'node:process';
 import { type Collection, Double, Int32 } from 'mongodb';
-import { fetchCollection } from '@j164/bot-framework';
+import { type CollectionFetcher } from '@j164/bot-framework';
 import { type Logger } from 'pino';
 import { BaseDocument } from '../../util/database/base-document.js';
 import { BLACKJACK_COLLECTION } from '../../util/database/collection-options.js';
@@ -26,8 +25,8 @@ type DecodedBlackjack = {
 
 /** A user's blackjack stats */
 export class BlackjackSave extends BaseDocument {
-	public static async get(userId: string, logger: Logger): Promise<BlackjackSave> {
-		const collection = await fetchCollection<EncodedBlackjack>('blackjack', env.MONGO_URL ?? '', BLACKJACK_COLLECTION);
+	public static async get(userId: string, logger: Logger, fetchCollection: CollectionFetcher): Promise<BlackjackSave> {
+		const collection = await fetchCollection<EncodedBlackjack>('blackjack', BLACKJACK_COLLECTION);
 		const save = await collection.findOne({ _id: userId });
 
 		return new BlackjackSave(

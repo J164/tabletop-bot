@@ -9,7 +9,7 @@ export const handler: ChatInputCommandHandler<true> = {
 	async respond(response, context) {
 		switch (response.interaction.options.getSubcommand()) {
 			case 'play': {
-				const user = fetchUser(response.interaction.user.id, context.botClient.globalLogger);
+				const user = fetchUser(response.interaction.user.id, context.botClient.globalLogger, context.botClient.fetchCollection);
 
 				const [channel, bank, blackjackStats] = await Promise.all([
 					response.interaction.user.createDM(),
@@ -87,7 +87,7 @@ export const handler: ChatInputCommandHandler<true> = {
 			}
 
 			case 'stats': {
-				const user = fetchUser(response.interaction.user.id, context.botClient.globalLogger);
+				const user = fetchUser(response.interaction.user.id, context.botClient.globalLogger, context.botClient.fetchCollection);
 				const blackjackSave = await user.getBlackjackSave();
 
 				await response.interaction.editReply(

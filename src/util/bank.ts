@@ -1,6 +1,5 @@
-import { env } from 'node:process';
 import { type Collection, Int32, Long } from 'mongodb';
-import { fetchCollection } from '@j164/bot-framework';
+import { type CollectionFetcher } from '@j164/bot-framework';
 import { type Logger } from 'pino';
 import { BaseDocument } from './database/base-document.js';
 import { BANK_COLLECTION } from './database/collection-options.js';
@@ -35,8 +34,8 @@ export class Bank extends BaseDocument {
 	 * @param userId The user's Discord id
 	 * @returns The user's bank
 	 */
-	public static async get(userId: string, logger: Logger): Promise<Bank> {
-		const collection = await fetchCollection<EncodedBank>('bank', env.MONGO_URL ?? '', BANK_COLLECTION);
+	public static async get(userId: string, logger: Logger, fetchCollection: CollectionFetcher): Promise<Bank> {
+		const collection = await fetchCollection<EncodedBank>('bank', BANK_COLLECTION);
 		const bank = await collection.findOne({ _id: userId });
 
 		return new Bank(

@@ -6,7 +6,7 @@ export const handler: ChatInputCommandHandler<true> = {
 	type: 'chatInputCommand',
 	allowedInDm: true,
 	async respond(response, context) {
-		const user = fetchUser(response.interaction.user.id, context.botClient.globalLogger);
+		const user = fetchUser(response.interaction.user.id, context.botClient.globalLogger, context.botClient.fetchCollection);
 		const bank = await user.getBank();
 		const idleTokenResult = bank.checkIdleTokens();
 
